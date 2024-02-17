@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ShipIM" id="25-10-2023--2-create-ticket-table">
+        <createTable tableName="ticket">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints
+                        primaryKey="true"/>
+            </column>
+            <column name="route_id" type="BIGINT">
+                <constraints
+                        nullable="false"
+                        foreignKeyName="fk_ticket_route" references="route(id)"/>
+            </column>
+            <column name="seat" type="INT">
+                <constraints
+                        nullable="false"/>
+            </column>
+            <column name="price" type="Double">
+                <constraints
+                        nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ticket"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ShipIM" id="25-10-2023--4-create-reservation-table">
+        <createTable tableName="reservation">
+            <column name="ticket_id" type="BIGINT">
+                <constraints
+                        primaryKey="true"
+                        foreignKeyName="fk_reservation_ticket" references="ticket(id)"/>
+            </column>
+            <column name="user_login" type="VARCHAR">
+                <constraints
+                        foreignKeyName="fk_reservation_user" references="user(login)"
+                        nullable="false"/>
+            </column>
+            <column name="creation_date" type="TIMESTAMP">
+                <constraints
+                        nullable="false"/>
+            </column>
+            <column name="bought" type="BOOLEAN">
+                <constraints
+                        nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="reservation"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
