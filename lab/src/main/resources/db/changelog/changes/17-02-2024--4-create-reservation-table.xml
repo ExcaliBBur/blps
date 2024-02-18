@@ -5,10 +5,14 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <changeSet author="ShipIM" id="25-10-2023--4-create-reservation-table">
         <createTable tableName="reservation">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints
+                        primaryKey="true"/>
+            </column>
             <column name="ticket_id" type="BIGINT">
                 <constraints
-                        primaryKey="true"
-                        foreignKeyName="fk_reservation_ticket" references="ticket(id)"/>
+                        foreignKeyName="fk_reservation_ticket" references="ticket(id)"
+                        nullable="false"/>
             </column>
             <column name="user_login" type="VARCHAR">
                 <constraints

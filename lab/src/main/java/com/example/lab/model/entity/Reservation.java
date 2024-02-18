@@ -20,6 +20,10 @@ import java.time.LocalDateTime;
 public class Reservation {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
