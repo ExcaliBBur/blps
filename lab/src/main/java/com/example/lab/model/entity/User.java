@@ -1,5 +1,6 @@
 package com.example.lab.model.entity;
 
+import com.example.lab.model.enumeration.UserRole;
 import com.example.lab.model.enumeration.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class User {
 
     @Column(name = "role")
     @Enumerated(value = EnumType.STRING)
-    private String role;
+    private UserRole role;
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
