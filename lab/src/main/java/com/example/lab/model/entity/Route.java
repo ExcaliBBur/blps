@@ -27,4 +27,10 @@ public class Route {
     @Column(name = "train_number")
     private Long train;
 
+    @Column(name = "source")
+    private String source;
+
+    @Column(name = "destination")
+    private String destination;
+
 }

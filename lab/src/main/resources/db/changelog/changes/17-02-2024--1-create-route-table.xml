@@ -17,6 +17,14 @@
                 <constraints
                         nullable="false"/>
             </column>
+            <column name="source" type="VARCHAR">
+                <constraints
+                        nullable="false"/>
+            </column>
+            <column name="destination" type="VARCHAR">
+                <constraints
+                        nullable="false"/>
+            </column>
         </createTable>
         <rollback>
             <dropTable tableName="route"/>
