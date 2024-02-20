@@ -48,8 +48,6 @@ public class UserController {
         return userMapper.mapToResponse(user);
     }
 
-    //TODO: логин занят обработка исключение примари кей
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить пользователей")
