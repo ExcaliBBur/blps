@@ -11,22 +11,20 @@
             </column>
             <column name="ticket_id" type="BIGINT">
                 <constraints
+                        unique="true"
                         foreignKeyName="fk_reservation_ticket" references="ticket(id)"
                         nullable="false"/>
             </column>
             <column name="user_login" type="VARCHAR">
                 <constraints
-                        foreignKeyName="fk_reservation_user" references="user(login)"
+                        foreignKeyName="fk_reservation_user" references="_user(login)"
                         nullable="false"/>
             </column>
             <column name="creation_date" type="TIMESTAMP">
                 <constraints
                         nullable="false"/>
             </column>
-            <column name="bought" type="BOOLEAN">
-                <constraints
-                        nullable="false"/>
-            </column>
+            <column defaultValue="false" name="bought" type="BOOLEAN"/>
         </createTable>
         <rollback>
             <dropTable tableName="reservation"/>
