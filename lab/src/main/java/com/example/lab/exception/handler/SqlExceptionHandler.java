@@ -24,7 +24,7 @@ public class SqlExceptionHandler {
                 .findAny()
                 .orElse("Возникло непредвиденное исключение");
 
-        return new ResponseEntity<>(Map.of("error", message), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(Map.of("error", message), HttpStatus.CONFLICT);
     }
 
 }
