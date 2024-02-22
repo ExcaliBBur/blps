@@ -13,8 +13,8 @@
                 <constraints
                         nullable="false"/>
             </column>
-            <column defaultValue="USER" name="role" type="VARCHAR"/>
-            <column defaultValue="ACTIVE" name="status" type="VARCHAR"/>
+            <column name="role" type="VARCHAR"/>
+            <column name="status" type="VARCHAR"/>
         </createTable>
         <rollback>
             <dropTable tableName="_user"/>

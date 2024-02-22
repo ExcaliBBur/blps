@@ -60,36 +60,36 @@ public class UserController {
         return users.map(userMapper::mapToResponse);
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/{login}/status")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Обновить статус пользователя")
     @ApiResponse(responseCode = "404", description = "Пользователя не существует",
             content = @Content)
     public UserResponse updateUserStatus(
             @PathVariable
-            String id,
+            String login,
             @RequestBody
             @UserStatusConstraint(message = "Неподходящий статус")
             String status
     ) {
-        User user = userService.updateUserStatus(Long.parseLong(id), UserStatus.valueOf(status));
+        User user = userService.updateUserStatus(login, UserStatus.valueOf(status));
 
         return userMapper.mapToResponse(user);
     }
 
-    @PatchMapping("/{id}/role")
+    @PatchMapping("/{login}/role")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Обновить роль пользователя")
     @ApiResponse(responseCode = "404", description = "Пользователя не существует",
             content = @Content)
     public UserResponse updateUserRole(
             @PathVariable
-            String id,
+            String login,
             @RequestBody
             @UserRoleConstraint(message = "Неподходящая роль")
             String role
     ) {
-        User user = userService.updateUserRole(Long.parseLong(id), UserRole.valueOf(role));
+        User user = userService.updateUserRole(login, UserRole.valueOf(role));
 
         return userMapper.mapToResponse(user);
     }

@@ -24,11 +24,11 @@ public class Reservation {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_login")
     private User user;
 
@@ -37,6 +37,6 @@ public class Reservation {
     private LocalDateTime creationDate;
 
     @Column(name = "bought")
-    private Boolean bought;
+    private Boolean bought = false;
 
 }

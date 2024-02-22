@@ -25,10 +25,10 @@ public class User {
 
     @Column(name = "role")
     @Enumerated(value = EnumType.STRING)
-    private UserRole role;
+    private UserRole role = UserRole.valueOf("USER");
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
-    private UserStatus status;
+    private UserStatus status = UserStatus.valueOf("ACTIVE");
 
 }

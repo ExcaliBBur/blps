@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,7 +17,7 @@ public class CreateRouteRequest {
 
     @FutureOrPresent(message = "Дата отправления не должна быть в прошлом")
     @NotNull(message = "Дата отправления не должна быть пустой")
-    private LocalDateTime departure;
+    private LocalDate departure;
 
     @NotNull(message = "Номер поезда не должен быть пустым")
     @JsonProperty(value = "train_number")
@@ -28,6 +29,6 @@ public class CreateRouteRequest {
 
     @NotBlank(message = "Точка назначения не должна состоять только из пробельных символов")
     @NotEmpty(message = "Точка назначения не должна быть пустой")
-    private String target;
+    private String destination;
 
 }

@@ -13,7 +13,7 @@ public class CreateReservationRequest {
     @JsonProperty(value = "ticket_id")
     private Long ticket;
 
-    @NotBlank(message = "Логин не должна состоять только из пробельных символов")
+    @NotBlank(message = "Логин не должен состоять только из пробельных символов")
     @NotEmpty(message = "Логин не должен быть пустым")
     @JsonProperty(value = "user_login")
     private String user;

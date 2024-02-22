@@ -6,19 +6,17 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 public class TicketFilter {
 
     @FutureOrPresent(message = "Дата отправления не должна быть в прошлом")
-    private LocalDateTime departure;
+    private LocalDate departure;
 
-    @NotBlank(message = "Точка отправления не должна состоять только из пробельных символов")
     private String source;
 
-    @NotBlank(message = "Точка назначения не должна состоять только из пробельных символов")
     private String target;
 
     @Positive(message = "Стоимость должна быть положительным числом")

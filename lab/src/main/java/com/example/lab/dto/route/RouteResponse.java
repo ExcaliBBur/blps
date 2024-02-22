@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,7 +13,7 @@ public class RouteResponse {
 
     private Long id;
 
-    private LocalDateTime departure;
+    private LocalDate departure;
 
     @JsonProperty(value = "train_number")
     private Long train;

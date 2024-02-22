@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 public class UserResponse {
 
-    private Long id;
-
     private String login;
 
     private UserRole role;

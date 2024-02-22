@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "route")
@@ -22,7 +24,7 @@ public class Route {
     private Long id;
 
     @Column(name = "departure")
-    private LocalDateTime departure;
+    private LocalDate departure;
 
     @Column(name = "train_number")
     private Long train;
@@ -32,5 +34,8 @@ public class Route {
 
     @Column(name = "destination")
     private String destination;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "route")
+    private List<Ticket> tickets;
 
 }

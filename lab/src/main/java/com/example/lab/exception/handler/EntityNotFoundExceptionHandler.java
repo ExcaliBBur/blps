@@ -11,7 +11,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class EntityNotFoundExceptionHandler {
     @ExceptionHandler(value = EntityNotFoundException.class)
-    public ResponseEntity<Map<String,String>> handleCarNotFoundException(EntityNotFoundException exception) {
+    public ResponseEntity<Map<String,String>> handleNotFoundException(EntityNotFoundException exception) {
         return new ResponseEntity<>(Map.of("error", exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

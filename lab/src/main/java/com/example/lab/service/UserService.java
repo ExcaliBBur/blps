@@ -4,6 +4,7 @@ import com.example.lab.model.entity.User;
 import com.example.lab.model.enumeration.UserRole;
 import com.example.lab.model.enumeration.UserStatus;
 import com.example.lab.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,19 +17,25 @@ public class UserService {
     private final UserRepository userRepository;
 
     public User createUser(User user) {
-        return null;
+        return userRepository.save(user);
     }
 
     public Page<User> getUsers(Pageable pageable) {
-        return null;
+        return userRepository.findAll(pageable);
     }
 
-    public User updateUserRole(Long id, UserRole role) {
-        return null;
+    public User updateUserRole(String login, UserRole role) {
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователя с таким login не существует"));
+        user.setRole(role);
+        return userRepository.save(user);
     }
 
-    public User updateUserStatus(Long id, UserStatus status) {
-        return null;
+    public User updateUserStatus(String login, UserStatus status) {
+        User user = userRepository.findById(login)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователя с таким login не существует"));
+        user.setStatus(status);
+        return userRepository.save(user);
     }
 
 }

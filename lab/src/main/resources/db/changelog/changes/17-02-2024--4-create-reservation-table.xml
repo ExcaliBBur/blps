@@ -24,7 +24,7 @@
                 <constraints
                         nullable="false"/>
             </column>
-            <column defaultValue="false" name="bought" type="BOOLEAN"/>
+            <column name="bought" type="BOOLEAN"/>
         </createTable>
         <rollback>
             <dropTable tableName="reservation"/>

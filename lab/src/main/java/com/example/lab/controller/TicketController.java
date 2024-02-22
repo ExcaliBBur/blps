@@ -10,6 +10,7 @@ import com.example.lab.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,12 @@ public class TicketController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Создать билет")
-    @ApiResponse(responseCode = "404", description = "Маршрута не существует",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "409", description = "Такой билет уже существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Маршрута не существует",
+                    content = @Content)
+    })
     public TicketResponse createTicket(
             @RequestBody
             @Valid
