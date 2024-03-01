@@ -26,7 +26,13 @@ public class RouteService {
         if (!routeRepository.existsById(id)) {
             throw new EntityNotFoundException("Маршрута с таким id не найдено");
         }
+
         routeRepository.deleteById(id);
+    }
+
+    public Route getRouteById(Long id) {
+        return routeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Маршрута с таким id не существует"));
     }
 
 }

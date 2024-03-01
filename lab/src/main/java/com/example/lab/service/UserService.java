@@ -25,17 +25,22 @@ public class UserService {
     }
 
     public User updateUserRole(String login, UserRole role) {
-        User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователя с таким login не существует"));
+        User user = getUserByLogin(login);
         user.setRole(role);
+
         return userRepository.save(user);
     }
 
     public User updateUserStatus(String login, UserStatus status) {
-        User user = userRepository.findById(login)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователя с таким login не существует"));
+        User user = getUserByLogin(login);
         user.setStatus(status);
+
         return userRepository.save(user);
+    }
+
+    public User getUserByLogin(String login) {
+        return userRepository.findByLogin(login)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователя с таким login не существует"));
     }
 
 }

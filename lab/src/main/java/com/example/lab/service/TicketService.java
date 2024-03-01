@@ -4,10 +4,8 @@ import com.example.lab.dto.filtration.TicketFilter;
 import com.example.lab.model.entity.QTicket;
 import com.example.lab.model.entity.Route;
 import com.example.lab.model.entity.Ticket;
-import com.example.lab.repository.RouteRepository;
 import com.example.lab.repository.TicketRepository;
 import com.querydsl.core.BooleanBuilder;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,12 +19,12 @@ import java.util.Objects;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final RouteRepository routeRepository;
+    private final RouteService routeService;
 
     public Ticket createTicket(Ticket ticket) {
-        Route route = routeRepository.findById(ticket.getRoute().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Маршрута с таким id не существует"));
+        Route route = routeService.getRouteById(ticket.getRoute().getId());
         ticket.setRoute(route);
+
         return ticketRepository.save(ticket);
     }
 
@@ -51,6 +49,11 @@ public class TicketService {
         }
 
         return ticketRepository.findAll(predicate, pageable);
+    }
+
+    public Ticket getTicketById(Long id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Билета с таким id не существует"));
     }
 
 }
