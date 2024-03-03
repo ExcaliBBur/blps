@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "route")
@@ -35,7 +35,25 @@ public class Route {
     @Column(name = "destination")
     private String destination;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "route")
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
+
+    public void setRoute(Route route) {
+        if (Objects.nonNull(route.departure)) {
+            this.departure = route.departure;
+        }
+
+        if (Objects.nonNull(route.train)) {
+            this.train = route.train;
+        }
+
+        if (Objects.nonNull(route.source)) {
+            this.source = route.source;
+        }
+
+        if (Objects.nonNull(route.destination)) {
+            this.destination = route.destination;
+        }
+    }
 
 }

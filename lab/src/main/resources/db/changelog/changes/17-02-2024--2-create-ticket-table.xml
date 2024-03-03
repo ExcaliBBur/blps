@@ -12,8 +12,8 @@
             <column name="route_id" type="BIGINT">
                 <constraints
                         nullable="false"
-                        foreignKeyName="fk_ticket_route" references="route(id)"
-                        unique="true" uniqueConstraintName="ticket_unique"/>
+                        unique="true" uniqueConstraintName="ticket_unique"
+                        foreignKeyName="fk_ticket_route" references="route(id)"/>
             </column>
             <column name="seat" type="INT">
                 <constraints

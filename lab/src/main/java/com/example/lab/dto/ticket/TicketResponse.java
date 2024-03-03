@@ -8,8 +8,6 @@ import lombok.Setter;
 @Setter
 public class TicketResponse {
 
-    private Long id;
-
     @JsonProperty(value = "route_id")
     private Long route;
 

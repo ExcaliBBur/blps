@@ -9,11 +9,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ReservationMapper {
 
-    @Mapping(target = "ticket.id", source = "ticket")
-    @Mapping(target = "user.login", source = "user")
-    Reservation mapToReservation(CreateReservationRequest request);
+    @Mapping(target = "user.id", source = "request.user")
+    @Mapping(target = "ticket.route.id", source = "route")
+    @Mapping(target = "ticket.seat", source = "seat")
+    Reservation mapToReservation(CreateReservationRequest request, Long route, Integer seat);
 
-    @Mapping(target = "ticket", source = "ticket.id")
     @Mapping(target = "user", source = "user.login")
     ReservationResponse mapToResponse(Reservation reservation);
 

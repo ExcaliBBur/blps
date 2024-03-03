@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +20,11 @@ public class ReservationService {
     private final UserService userService;
 
     public Reservation createReservation(Reservation reservation) {
-        User user = userService.getUserByLogin(reservation.getUser().getLogin());
-        Ticket ticket = ticketService.getTicketById(reservation.getTicket().getId());
+        User user = userService.getUserById(reservation.getUser().getId());
+        Ticket ticket = ticketService.getTicketByRouteAndSeat(
+                reservation.getTicket().getRoute().getId(),
+                reservation.getTicket().getSeat()
+        );
 
         reservation.setUser(user);
         reservation.setTicket(ticket);
@@ -32,24 +36,25 @@ public class ReservationService {
         return reservationRepository.findAll(pageable);
     }
 
-    public void deleteReservation(Long id) {
-        if (!reservationRepository.existsById(id)) {
-            throw new EntityNotFoundException("Бронь с таким id не найдена");
+    @Transactional
+    public void deleteReservation(Long route, Integer seat) {
+        if (!reservationRepository.existsByTicketRouteIdAndTicketSeat(route, seat)) {
+            throw new EntityNotFoundException("Бронь на билет с таким id не найдена");
         }
 
-        reservationRepository.deleteById(id);
+        reservationRepository.deleteByTicketRouteIdAndTicketSeat(route, seat);
     }
 
-    public Reservation updateReservationStatus(Long id, Boolean bought) {
-        Reservation reservation = getReservationById(id);
+    public Reservation updateReservationStatus(Long route, Integer seat, Boolean bought) {
+        Reservation reservation = getReservationByRouteAndSeat(route, seat);
         reservation.setBought(bought);
 
         return reservationRepository.save(reservation);
     }
 
-    public Reservation getReservationById(Long id) {
-        return reservationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Бронь с таким id не найдена"));
+    public Reservation getReservationByRouteAndSeat(Long route, Integer seat) {
+        return reservationRepository.findReservationByTicketRouteIdAndTicketSeat(route, seat)
+                .orElseThrow(() -> new EntityNotFoundException("Бронь на билет с таким id не найдена"));
     }
 
 }

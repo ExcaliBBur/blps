@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "ticket")
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class Ticket {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToOne
     @JoinColumn(name = "route_id")
     private Route route;
 
@@ -28,5 +30,14 @@ public class Ticket {
 
     @Column(name = "price")
     private Double price;
+
+    @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
+    private Reservation reservation;
+
+    public void setTicket(Ticket ticket) {
+        if (Objects.nonNull(ticket.price)) {
+            this.price = ticket.price;
+        }
+    }
 
 }

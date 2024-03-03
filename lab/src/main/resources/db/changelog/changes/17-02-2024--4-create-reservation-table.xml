@@ -15,9 +15,9 @@
                         foreignKeyName="fk_reservation_ticket" references="ticket(id)"
                         nullable="false"/>
             </column>
-            <column name="user_login" type="VARCHAR">
+            <column name="user_id" type="BIGINT">
                 <constraints
-                        foreignKeyName="fk_reservation_user" references="_user(login)"
+                        foreignKeyName="fk_reservation_user" references="_user(id)"
                         nullable="false"/>
             </column>
             <column name="creation_date" type="TIMESTAMP">

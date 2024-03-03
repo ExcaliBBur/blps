@@ -35,4 +35,11 @@ public class RouteService {
                 .orElseThrow(() -> new EntityNotFoundException("Маршрута с таким id не существует"));
     }
 
+    public Route updateRoute(Route updated) {
+        Route route = getRouteById(updated.getId());
+        route.setRoute(updated);
+
+        return routeRepository.save(route);
+    }
+
 }

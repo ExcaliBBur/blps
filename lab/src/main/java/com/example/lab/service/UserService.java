@@ -1,8 +1,6 @@
 package com.example.lab.service;
 
 import com.example.lab.model.entity.User;
-import com.example.lab.model.enumeration.UserRole;
-import com.example.lab.model.enumeration.UserStatus;
 import com.example.lab.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,23 +22,16 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public User updateUserRole(String login, UserRole role) {
-        User user = getUserByLogin(login);
-        user.setRole(role);
-
-        return userRepository.save(user);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователя с таким id не существует"));
     }
 
-    public User updateUserStatus(String login, UserStatus status) {
-        User user = getUserByLogin(login);
-        user.setStatus(status);
+    public User updateUser(User updated) {
+        User user = getUserById(updated.getId());
+        user.setUser(updated);
 
         return userRepository.save(user);
-    }
-
-    public User getUserByLogin(String login) {
-        return userRepository.findByLogin(login)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователя с таким login не существует"));
     }
 
 }

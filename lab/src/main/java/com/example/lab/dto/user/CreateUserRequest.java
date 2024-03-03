@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class CreateUserRequest {
 
-    @NotBlank(message = "Логин не должна состоять только из пробельных символов")
+    @NotBlank(message = "Логин не должен состоять только из пробельных символов")
     @NotEmpty(message = "Логин не должен быть пустым")
     private String login;
 

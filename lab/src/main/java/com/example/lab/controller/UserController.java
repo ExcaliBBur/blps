@@ -1,14 +1,11 @@
 package com.example.lab.controller;
 
-import com.example.lab.constraint.UserRoleConstraint;
-import com.example.lab.constraint.UserStatusConstraint;
 import com.example.lab.dto.mapper.UserMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
 import com.example.lab.dto.user.CreateUserRequest;
+import com.example.lab.dto.user.UpdateUserRequest;
 import com.example.lab.dto.user.UserResponse;
 import com.example.lab.model.entity.User;
-import com.example.lab.model.enumeration.UserRole;
-import com.example.lab.model.enumeration.UserStatus;
 import com.example.lab.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -60,37 +57,20 @@ public class UserController {
         return users.map(userMapper::mapToResponse);
     }
 
-    @PatchMapping("/{login}/status")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить статус пользователя")
+    @Operation(summary = "Изменить пользователя")
     @ApiResponse(responseCode = "404", description = "Пользователя не существует",
             content = @Content)
-    public UserResponse updateUserStatus(
+    public UserResponse updateUser(
             @PathVariable
-            String login,
+            Long id,
             @RequestBody
-            @UserStatusConstraint(message = "Неподходящий статус")
-            String status
+            @Valid
+            UpdateUserRequest request
     ) {
-        User user = userService.updateUserStatus(login, UserStatus.valueOf(status));
+        User user = userMapper.mapToUser(request, id);
 
-        return userMapper.mapToResponse(user);
-    }
-
-    @PatchMapping("/{login}/role")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Обновить роль пользователя")
-    @ApiResponse(responseCode = "404", description = "Пользователя не существует",
-            content = @Content)
-    public UserResponse updateUserRole(
-            @PathVariable
-            String login,
-            @RequestBody
-            @UserRoleConstraint(message = "Неподходящая роль")
-            String role
-    ) {
-        User user = userService.updateUserRole(login, UserRole.valueOf(role));
-
-        return userMapper.mapToResponse(user);
+        return userMapper.mapToResponse(userService.updateUser(user));
     }
 }
