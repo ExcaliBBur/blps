@@ -34,6 +34,8 @@ public class TicketController {
     @Operation(summary = "Создать билет")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
                     content = @Content)
     })
     public TicketResponse createTicket(
@@ -53,6 +55,8 @@ public class TicketController {
     @GetMapping("/tickets")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить билеты")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public Page<TicketResponse> getTickets(
             @Valid
             TicketFilter filter,
@@ -71,6 +75,8 @@ public class TicketController {
             @ApiResponse(responseCode = "404", description = "Билета не существует",
                     content = @Content),
             @ApiResponse(responseCode = "200", description = "Билет успешно изменён",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
                     content = @Content)
     })
     public TicketResponse updateTicket(
@@ -90,8 +96,12 @@ public class TicketController {
     @DeleteMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Удалить билет")
-    @ApiResponse(responseCode = "404", description = "Билета не существует",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Билета не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public void deleteTicket(
             @PathVariable
             Long route,

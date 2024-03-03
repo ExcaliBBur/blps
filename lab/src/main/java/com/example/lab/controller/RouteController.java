@@ -32,6 +32,8 @@ public class RouteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Создать маршрут")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public RouteResponse createRoute(
             @RequestBody
             @Valid
@@ -47,6 +49,8 @@ public class RouteController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить маршруты")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public Page<RouteResponse> getRoutes(
             @Valid
             PaginationRequest request
@@ -59,8 +63,12 @@ public class RouteController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Удалить маршрут")
-    @ApiResponse(responseCode = "404", description = "Маршрута не существует",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Маршрута не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public void deleteRoute(
             @PathVariable
             Long id
@@ -75,6 +83,8 @@ public class RouteController {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
                     content = @Content),
             @ApiResponse(responseCode = "200", description = "Маршрут успешно изменён",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
                     content = @Content)
     })
     public RouteResponse updateRoute(

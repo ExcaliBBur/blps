@@ -10,6 +10,7 @@ import com.example.lab.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,13 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Создать пользователя")
-    @ApiResponse(responseCode = "409", description = "Логин уже занят",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "409", description = "Логин уже занят",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
+
     public UserResponse createUser(
             @RequestBody
             @Valid
@@ -48,6 +54,8 @@ public class UserController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить пользователей")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public Page<UserResponse> getUsers(
             @Valid
             PaginationRequest request
@@ -60,8 +68,12 @@ public class UserController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Изменить пользователя")
-    @ApiResponse(responseCode = "404", description = "Пользователя не существует",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Пользователя не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public UserResponse updateUser(
             @PathVariable
             Long id,

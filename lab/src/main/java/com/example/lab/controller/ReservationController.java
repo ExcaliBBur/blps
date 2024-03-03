@@ -1,7 +1,6 @@
 package com.example.lab.controller;
 
 import com.example.lab.dto.mapper.ReservationMapper;
-import com.example.lab.dto.mapper.TicketMapper;
 import com.example.lab.dto.reservation.CreateReservationRequest;
 import com.example.lab.dto.reservation.ReservationResponse;
 import com.example.lab.model.entity.Reservation;
@@ -26,7 +25,6 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final ReservationMapper reservationMapper;
-    private final TicketMapper ticketMapper;
 
     @PostMapping("/{seat}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,6 +33,8 @@ public class ReservationController {
             @ApiResponse(responseCode = "409", description = "Билет уже забронирован",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Билета или пользователя не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
                     content = @Content)
     })
     public ReservationResponse createReservation(
@@ -54,8 +54,12 @@ public class ReservationController {
     }
 
     @Operation(summary = "Изменить статус оплаты брони")
-    @ApiResponse(responseCode = "404", description = "Брони не существует",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Брони не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     @PatchMapping("/{seat}/reservation/status")
     @ResponseStatus(HttpStatus.OK)
     public ReservationResponse updateReservationStatus(
@@ -72,8 +76,12 @@ public class ReservationController {
     }
 
     @Operation(summary = "Удалить бронь")
-    @ApiResponse(responseCode = "404", description = "Брони не существует",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Брони не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     @DeleteMapping("/{seat}/reservation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(
@@ -86,8 +94,12 @@ public class ReservationController {
     }
 
     @Operation(summary = "Получить информацию о брони")
-    @ApiResponse(responseCode = "404", description = "Брони не существует",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Брони не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     @GetMapping("/{seat}/reservation")
     @ResponseStatus(HttpStatus.OK)
     public ReservationResponse getReservation(
