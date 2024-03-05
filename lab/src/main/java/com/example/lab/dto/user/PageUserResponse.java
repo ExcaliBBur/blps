@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class PageUserResponse {
 
+    @JsonProperty(value = "users")
     List<UserResponse> userResponses;
 
     @JsonProperty(value = "total_elements")

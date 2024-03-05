@@ -11,6 +11,8 @@ import java.util.List;
 @Setter
 @Builder
 public class PageRouteResponse {
+
+    @JsonProperty(value = "routes")
     List<RouteResponse> routeResponses;
 
     @JsonProperty(value = "total_elements")
