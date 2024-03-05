@@ -3,6 +3,7 @@ package com.example.lab.controller;
 import com.example.lab.dto.mapper.UserMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
 import com.example.lab.dto.user.CreateUserRequest;
+import com.example.lab.dto.user.PageUserResponse;
 import com.example.lab.dto.user.UpdateUserRequest;
 import com.example.lab.dto.user.UserResponse;
 import com.example.lab.model.entity.User;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -56,13 +59,19 @@ public class UserController {
     @Operation(summary = "Получить пользователей")
     @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
             content = @Content)
-    public Page<UserResponse> getUsers(
+    public PageUserResponse getUsers(
             @Valid
             PaginationRequest request
     ) {
         Page<User> users = userService.getUsers(request.formPageRequest());
+        List<UserResponse> listUsers = users.getContent()
+                .stream().map(userMapper::mapToResponse).toList();
 
-        return users.map(userMapper::mapToResponse);
+        return PageUserResponse.builder()
+                .userResponses(listUsers)
+                .totalElements(users.getTotalElements())
+                .totalPages(users.getTotalPages())
+                .build();
     }
 
     @PatchMapping("/{id}")

@@ -4,6 +4,7 @@ import com.example.lab.dto.filtration.TicketFilter;
 import com.example.lab.dto.mapper.TicketMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
 import com.example.lab.dto.ticket.CreateTicketRequest;
+import com.example.lab.dto.ticket.PageTicketResponse;
 import com.example.lab.dto.ticket.TicketResponse;
 import com.example.lab.dto.ticket.UpdateTicketRequest;
 import com.example.lab.model.entity.Ticket;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Tag(name = "tickets", description = "Контроллер для работы с билетами")
@@ -57,15 +60,21 @@ public class TicketController {
     @Operation(summary = "Получить билеты")
     @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
             content = @Content)
-    public Page<TicketResponse> getTickets(
+    public PageTicketResponse getTickets(
             @Valid
             TicketFilter filter,
             @Valid
             PaginationRequest request
     ) {
         Page<Ticket> tickets = ticketService.getTickets(filter, request.formPageRequest());
+        List<TicketResponse> listTickets = tickets.getContent()
+                .stream().map(ticketMapper::mapToResponse).toList();
 
-        return tickets.map(ticketMapper::mapToResponse);
+        return PageTicketResponse.builder()
+                .ticketResponses(listTickets)
+                .totalElements(tickets.getTotalElements())
+                .totalPages(tickets.getTotalPages())
+                .build();
     }
 
     @PatchMapping("/routes/{route}/tickets/{seat}")

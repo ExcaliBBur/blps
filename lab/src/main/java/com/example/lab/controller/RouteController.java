@@ -3,6 +3,7 @@ package com.example.lab.controller;
 import com.example.lab.dto.mapper.RouteMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
 import com.example.lab.dto.route.CreateRouteRequest;
+import com.example.lab.dto.route.PageRouteResponse;
 import com.example.lab.dto.route.RouteResponse;
 import com.example.lab.dto.route.UpdateRouteRequest;
 import com.example.lab.model.entity.Route;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/routes")
@@ -51,13 +54,19 @@ public class RouteController {
     @Operation(summary = "Получить маршруты")
     @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
             content = @Content)
-    public Page<RouteResponse> getRoutes(
+    public PageRouteResponse getRoutes(
             @Valid
             PaginationRequest request
     ) {
         Page<Route> routes = routeService.getRoutes(request.formPageRequest());
+        List<RouteResponse> listRoutes = routes.getContent()
+                .stream().map(routeMapper::mapToResponse).toList();
 
-        return routes.map(routeMapper::mapToResponse);
+        return PageRouteResponse.builder()
+                .routeResponses(listRoutes)
+                .totalElements(routes.getTotalElements())
+                .totalPages(routes.getTotalPages())
+                .build();
     }
 
     @DeleteMapping("/{id}")
