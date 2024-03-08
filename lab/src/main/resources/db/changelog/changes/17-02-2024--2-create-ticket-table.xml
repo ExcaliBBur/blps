@@ -25,8 +25,5 @@
                         nullable="false"/>
             </column>
         </createTable>
-        <rollback>
-            <dropTable tableName="ticket"/>
-        </rollback>
     </changeSet>
 </databaseChangeLog>

@@ -26,8 +26,5 @@
             </column>
             <column name="bought" type="BOOLEAN"/>
         </createTable>
-        <rollback>
-            <dropTable tableName="reservation"/>
-        </rollback>
     </changeSet>
 </databaseChangeLog>

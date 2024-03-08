@@ -30,8 +30,5 @@
                         unique="true" uniqueConstraintName="route_unique"/>
             </column>
         </createTable>
-        <rollback>
-            <dropTable tableName="route"/>
-        </rollback>
     </changeSet>
 </databaseChangeLog>
