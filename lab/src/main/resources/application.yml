@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/blps
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://pg:5432/studs
+    username: s335148
+    password: rzLbQbEEUx0WUqBv
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -15,3 +15,5 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
+server:
+  port: 22222

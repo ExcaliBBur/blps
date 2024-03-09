@@ -1,7 +1,7 @@
 package com.example.lab.dto.filtration;
 
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +18,8 @@ public class TicketFilter {
 
     private String target;
 
-    @Positive(message = "Стоимость должна быть положительным числом")
-    private Double price;
+    @Pattern(regexp = "^(\\d+|\\d+[.]\\d{0,3})",
+            message = "Цена должна быть положительным числом с не более 3 знаками после запятой")
+    private String price;
 
 }

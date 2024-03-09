@@ -37,7 +37,7 @@ public class TicketService {
         }
 
         if (!Objects.isNull(filter.getPrice())) {
-            predicate.and(QTicket.ticket.price.loe(filter.getPrice()));
+            predicate.and(QTicket.ticket.price.loe(Double.parseDouble(filter.getPrice())));
         }
 
         if (!Objects.isNull(filter.getSource())) {

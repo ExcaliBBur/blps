@@ -74,6 +74,18 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить пользователя")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
+    public UserResponse getUser(
+            @PathVariable
+            Long id
+    ) {
+        return userMapper.mapToResponse(userService.getUserById(id));
+    }
+
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Изменить пользователя")

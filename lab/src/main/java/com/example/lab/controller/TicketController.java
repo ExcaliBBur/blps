@@ -77,6 +77,20 @@ public class TicketController {
                 .build();
     }
 
+    @GetMapping("/routes/{route}/tickets/{seat}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить билет")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
+    public TicketResponse getTicket(
+            @PathVariable
+            Long route,
+            @PathVariable
+            Integer seat
+    ) {
+        return ticketMapper.mapToResponse(ticketService.getTicketByRouteAndSeat(route, seat));
+    }
+
     @PatchMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Изменить билет")

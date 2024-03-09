@@ -69,6 +69,18 @@ public class RouteController {
                 .build();
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить маршрут")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
+    public RouteResponse getRoutes(
+            @PathVariable("id")
+            Long id
+    ) {
+        return routeMapper.mapToResponse(routeService.getRouteById(id));
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Удалить маршрут")
