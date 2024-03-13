@@ -1,12 +1,13 @@
 package com.example.lab.service;
 
+import com.example.lab.exception.EntityNotFoundException;
 import com.example.lab.model.entity.Route;
 import com.example.lab.repository.RouteRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -14,32 +15,36 @@ public class RouteService {
 
     private final RouteRepository routeRepository;
 
-    public Route createRoute(Route route) {
+    public Mono<Route> createRoute(Route route) {
         return routeRepository.save(route);
     }
 
-    public Page<Route> getRoutes(Pageable pageable) {
-        return routeRepository.findAll(pageable);
+    public Flux<Route> getRoutes(Pageable pageable) {
+        return routeRepository.findRoutes(pageable.getPageSize(), pageable.getPageNumber());
     }
 
-    public void deleteRoute(Long id) {
-        if (!routeRepository.existsById(id)) {
-            throw new EntityNotFoundException("Маршрута с таким id не найдено");
-        }
-
-        routeRepository.deleteById(id);
+    public Mono<Void> deleteRoute(Long id) {
+        return getRouteById(id)
+                .flatMap(routeRepository::delete);
     }
 
-    public Route getRouteById(Long id) {
+    public Mono<Route> getRouteById(Long id) {
         return routeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Маршрута с таким id не существует"));
+                .switchIfEmpty(Mono.error(new EntityNotFoundException("Маршрута с таким id не найдено")));
     }
 
-    public Route updateRoute(Route updated) {
-        Route route = getRouteById(updated.getId());
-        route.setRoute(updated);
+    public Mono<Route> updateRoute(Route updated) {
+        return getRouteById(updated.getId())
+                .flatMap(r -> {
+                    r.setRoute(updated);
+                    return routeRepository.save(r);
+                });
+    }
 
-        return routeRepository.save(route);
+    public Mono<Boolean> routeExistsById(Long id) {
+        return routeRepository.existsById(id)
+                .flatMap(exists -> exists ? Mono.just(true) :
+                        Mono.error(new EntityNotFoundException("Маршрута с таким id не найдено")));
     }
 
 }

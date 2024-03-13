@@ -7,4 +7,5 @@
     <include file="/db/changelog/changes/17-02-2024--2-create-ticket-table.xml"/>
     <include file="/db/changelog/changes/17-02-2024--3-create-user-table.xml"/>
     <include file="/db/changelog/changes/17-02-2024--4-create-reservation-table.xml"/>
+    <include file="/db/changelog/changes/11-03-2024--1-create-route-ticket-table.xml"/>
 </databaseChangeLog>

@@ -12,12 +12,10 @@
             <column name="ticket_id" type="BIGINT">
                 <constraints
                         unique="true"
-                        foreignKeyName="fk_reservation_ticket" references="ticket(id)"
                         nullable="false"/>
             </column>
             <column name="user_id" type="BIGINT">
                 <constraints
-                        foreignKeyName="fk_reservation_user" references="_user(id)"
                         nullable="false"/>
             </column>
             <column name="creation_date" type="TIMESTAMP">
@@ -26,5 +24,13 @@
             </column>
             <column name="bought" type="BOOLEAN"/>
         </createTable>
+        <addForeignKeyConstraint baseTableName="reservation" baseColumnNames="ticket_id"
+                                 constraintName="fk_reservation_ticket"
+                                 referencedTableName="ticket" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="reservation" baseColumnNames="user_id"
+                                 constraintName="fk_reservation_user"
+                                 referencedTableName="_user" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE"/>
     </changeSet>
 </databaseChangeLog>

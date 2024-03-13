@@ -3,28 +3,20 @@ package com.example.lab.controller;
 import com.example.lab.dto.mapper.UserMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
 import com.example.lab.dto.user.CreateUserRequest;
-import com.example.lab.dto.user.PageUserResponse;
 import com.example.lab.dto.user.UpdateUserRequest;
 import com.example.lab.dto.user.UserResponse;
 import com.example.lab.model.entity.User;
 import com.example.lab.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/users")
-@Tag(name = "users", description = "Контроллер для работы с пользователями")
 @Validated
 @RequiredArgsConstructor
 public class UserController {
@@ -34,68 +26,40 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Создать пользователя")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "409", description = "Логин уже занят",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-                    content = @Content)
-    })
-
-    public UserResponse createUser(
+    public Mono<UserResponse> createUser(
             @RequestBody
             @Valid
             CreateUserRequest request
     ) {
         User user = userMapper.mapToUser(request);
 
-        user = userService.createUser(user);
-
-        return userMapper.mapToResponse(user);
+        return userService.createUser(user)
+                .map(userMapper::mapToResponse);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получить пользователей")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
-    public PageUserResponse getUsers(
+    public Flux<UserResponse> getUsers(
             @Valid
             PaginationRequest request
     ) {
-        Page<User> users = userService.getUsers(request.formPageRequest());
-        List<UserResponse> listUsers = users.getContent()
-                .stream().map(userMapper::mapToResponse).toList();
-
-        return PageUserResponse.builder()
-                .userResponses(listUsers)
-                .totalElements(users.getTotalElements())
-                .totalPages(users.getTotalPages())
-                .build();
+        return userService.getUsers(request.formPageRequest())
+                .map(userMapper::mapToResponse);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получить пользователя")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
-    public UserResponse getUser(
+    public Mono<UserResponse> getUser(
             @PathVariable
             Long id
     ) {
-        return userMapper.mapToResponse(userService.getUserById(id));
+        return userService.getUserById(id)
+                .map(userMapper::mapToResponse);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Изменить пользователя")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Пользователя не существует",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-                    content = @Content)
-    })
-    public UserResponse updateUser(
+    public Mono<UserResponse> updateUser(
             @PathVariable
             Long id,
             @RequestBody
@@ -104,6 +68,7 @@ public class UserController {
     ) {
         User user = userMapper.mapToUser(request, id);
 
-        return userMapper.mapToResponse(userService.updateUser(user));
+        return userService.updateUser(user)
+                .map(userMapper::mapToResponse);
     }
 }

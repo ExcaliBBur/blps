@@ -8,14 +8,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Objects;
-
-@Table("ticket")
+@Table("route_ticket")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Ticket {
+public class RouteTicket {
 
     @Id
     private Long id;
@@ -23,14 +21,7 @@ public class Ticket {
     @Column("route_id")
     private Long route;
 
-    private Integer seat;
-
-    private Double price;
-
-    public void setTicket(Ticket ticket) {
-        if (Objects.nonNull(ticket.price)) {
-            this.price = ticket.price;
-        }
-    }
+    @Column("ticket_id")
+    private Long ticket;
 
 }

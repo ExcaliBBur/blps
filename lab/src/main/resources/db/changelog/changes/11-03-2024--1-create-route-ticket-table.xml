@@ -3,30 +3,29 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet author="ShipIM" id="17-02-2024--2-create-ticket-table">
-        <createTable tableName="ticket">
+    <changeSet author="ShipIM" id="11-03-2024--1-create-route-ticket-table">
+        <createTable tableName="route_ticket">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints
                         primaryKey="true"/>
             </column>
             <column name="route_id" type="BIGINT">
                 <constraints
-                        nullable="false"
-                        unique="true" uniqueConstraintName="ticket_unique"/>
+                        nullable="false"/>
             </column>
-            <column name="seat" type="INT">
+            <column name="ticket_id" type="BIGINT">
                 <constraints
-                        nullable="false"
-                        unique="true" uniqueConstraintName="ticket_unique"/>
-            </column>
-            <column name="price" type="Double">
-                <constraints
+                        unique="true" uniqueConstraintName="route_ticket_ticket_unique"
                         nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="ticket" baseColumnNames="route_id"
-                                 constraintName="fk_ticket_route"
+        <addForeignKeyConstraint baseTableName="route_ticket" baseColumnNames="route_id"
+                                 constraintName="fk_route_ticket_route"
                                  referencedTableName="route" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="route_ticket" baseColumnNames="ticket_id"
+                                 constraintName="fk_route_ticket_ticket"
+                                 referencedTableName="ticket" referencedColumnNames="id"
                                  onDelete="CASCADE" onUpdate="CASCADE"/>
     </changeSet>
 </databaseChangeLog>
