@@ -4,17 +4,20 @@ import com.example.lab.dto.filtration.TicketFilter;
 import com.example.lab.dto.mapper.TicketMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
 import com.example.lab.dto.ticket.CreateTicketRequest;
+import com.example.lab.dto.ticket.PageTicketResponse;
 import com.example.lab.dto.ticket.TicketResponse;
 import com.example.lab.dto.ticket.UpdateTicketRequest;
 import com.example.lab.model.entity.Ticket;
 import com.example.lab.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @Validated
@@ -41,14 +44,24 @@ public class TicketController {
 
     @GetMapping("/tickets")
     @ResponseStatus(HttpStatus.OK)
-    public Flux<TicketResponse> getTickets(
+    public Mono<PageTicketResponse> getTickets(
             @Valid
             TicketFilter filter,
             @Valid
             PaginationRequest request
     ) {
-        return ticketService.getTickets(filter, request.formPageRequest())
-                .map(ticketMapper::mapToResponse);
+        Pageable pageable = request.formPageRequest();
+
+        Mono<List<TicketResponse>> routesMono = ticketService.getTickets(filter, pageable)
+                .map(ticketMapper::mapToResponse)
+                .collectList();
+
+        Mono<Long> totalRoutesMono = ticketService.countTickets(filter);
+
+        Mono<Boolean> hasNextPageMono = ticketService.hasNextPage(filter, pageable);
+
+        return Mono.zip(routesMono, totalRoutesMono, hasNextPageMono)
+                .map(tuple -> new PageTicketResponse(tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 
     @GetMapping("/routes/{route}/tickets/{seat}")

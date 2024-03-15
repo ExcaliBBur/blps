@@ -47,4 +47,12 @@ public class RouteService {
                         Mono.error(new EntityNotFoundException("Маршрута с таким id не найдено")));
     }
 
+    public Mono<Long> countRoutes() {
+        return routeRepository.getRoutesCount();
+    }
+
+    public Mono<Boolean> hasNextPage(Pageable pageable) {
+        return routeRepository.hasNextPage(pageable.getPageSize(), pageable.getPageNumber());
+    }
+
 }

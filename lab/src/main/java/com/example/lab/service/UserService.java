@@ -42,4 +42,12 @@ public class UserService {
                         Mono.error(new EntityNotFoundException("Пользователя с таким id не существует")));
     }
 
+    public Mono<Long> countUsers() {
+        return userRepository.getUsersCount();
+    }
+
+    public Mono<Boolean> hasNextPage(Pageable pageable) {
+        return userRepository.hasNextPage(pageable.getPageSize(), pageable.getPageNumber());
+    }
+
 }

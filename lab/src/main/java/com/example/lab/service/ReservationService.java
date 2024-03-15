@@ -4,10 +4,8 @@ import com.example.lab.exception.EntityNotFoundException;
 import com.example.lab.model.entity.Reservation;
 import com.example.lab.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -22,10 +20,6 @@ public class ReservationService {
         return userService.userExistsById(reservation.getUser())
                 .flatMap(u -> ticketService.ticketExistsById(reservation.getTicket()))
                 .flatMap(t -> reservationRepository.save(reservation));
-    }
-
-    public Flux<Reservation> getReservations(Pageable pageable) {
-        return reservationRepository.findReservations(pageable.getPageSize(), pageable.getPageNumber());
     }
 
     @Transactional

@@ -5,7 +5,6 @@ import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -27,9 +26,5 @@ public interface ReservationRepository extends ReactiveCrudRepository<Reservatio
             "join ticket t on t.id = reservation.ticket_id " +
             "where route_id = :route and seat = :seat)")
     Mono<Void> deleteByTicket(Long route, Integer seat);
-
-    @Query("select * from reservation " +
-            "limit :pageSize offset :pageNumber * :pageSize")
-    Flux<Reservation> findReservations(Integer pageSize, Integer pageNumber);
 
 }

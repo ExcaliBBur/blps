@@ -3,17 +3,20 @@ package com.example.lab.controller;
 import com.example.lab.dto.mapper.UserMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
 import com.example.lab.dto.user.CreateUserRequest;
+import com.example.lab.dto.user.PageUserResponse;
 import com.example.lab.dto.user.UpdateUserRequest;
 import com.example.lab.dto.user.UserResponse;
 import com.example.lab.model.entity.User;
 import com.example.lab.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -39,12 +42,22 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Flux<UserResponse> getUsers(
+    public Mono<PageUserResponse> getUsers(
             @Valid
             PaginationRequest request
     ) {
-        return userService.getUsers(request.formPageRequest())
-                .map(userMapper::mapToResponse);
+        Pageable pageable = request.formPageRequest();
+
+        Mono<List<UserResponse>> routesMono = userService.getUsers(pageable)
+                .map(userMapper::mapToResponse)
+                .collectList();
+
+        Mono<Long> totalRoutesMono = userService.countUsers();
+
+        Mono<Boolean> hasNextPageMono = userService.hasNextPage(pageable);
+
+        return Mono.zip(routesMono, totalRoutesMono, hasNextPageMono)
+                .map(tuple -> new PageUserResponse(tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 
     @GetMapping("/{id}")

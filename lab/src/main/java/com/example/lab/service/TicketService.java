@@ -62,4 +62,17 @@ public class TicketService {
                         Mono.error(new EntityNotFoundException("Билета с таким id не существует")));
     }
 
+    public Mono<Long> countTickets(TicketFilter ticketFilter) {
+        return ticketRepository.getTicketsCount(
+                ticketFilter.getDeparture(),
+                Double.parseDouble(ticketFilter.getPrice()),
+                ticketFilter.getSource(),
+                ticketFilter.getTarget()
+        );
+    }
+
+    public Mono<Boolean> hasNextPage(TicketFilter filter, Pageable pageable) {
+        return ticketRepository.hasNextPage(filter, pageable.getPageSize(), pageable.getPageNumber());
+    }
+
 }

@@ -1,15 +1,14 @@
 package com.example.lab.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Setter
 @Getter
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageUserResponse {
 
     @JsonProperty(value = "users")
@@ -18,6 +17,7 @@ public class PageUserResponse {
     @JsonProperty(value = "total_elements")
     long totalElements;
 
-    @JsonProperty(value = "total_pages")
-    int totalPages;
+    @JsonProperty(value = "has_next_page")
+    boolean next;
+
 }

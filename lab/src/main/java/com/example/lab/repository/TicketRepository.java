@@ -1,5 +1,6 @@
 package com.example.lab.repository;
 
+import com.example.lab.dto.filtration.TicketFilter;
 import com.example.lab.model.entity.Ticket;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -26,6 +27,7 @@ public interface TicketRepository extends ReactiveCrudRepository<Ticket, Long> {
             "and (:price is null or t.price <= :price) " +
             "and (:source is null or r.source = :source) " +
             "and (:destination is null or r.destination = :destination) " +
+            "order by t.id " +
             "limit :pageSize offset :pageNumber * :pageSize")
     Flux<Ticket> findTickets(
             LocalDate departure,
@@ -36,4 +38,25 @@ public interface TicketRepository extends ReactiveCrudRepository<Ticket, Long> {
             Integer pageNumber
     );
 
+    @Query("select count(*) from ticket t " +
+            "join route r on r.id = t.route_id " +
+            "where (:departure is null or r.departure = :departure) " +
+            "and (:price is null or t.price <= :price) " +
+            "and (:source is null or r.source = :source) " +
+            "and (:destination is null or r.destination = :destination)")
+    Mono<Long> getTicketsCount(
+            LocalDate departure,
+            Double price,
+            String source,
+            String destination
+    );
+
+    @Query("select exists(select * from ticket t " +
+            "join route r on r.id = t.route_id " +
+            "where (:departure is null or r.departure = :departure) " +
+            "and (:price is null or t.price <= :price) " +
+            "and (:source is null or r.source = :source) " +
+            "and (:destination is null or r.destination = :destination) " +
+            "limit :pageSize offset :pageNumber * :pageSize + 1)")
+    Mono<Boolean> hasNextPage(TicketFilter filter, Integer pageSize, Integer pageNumber);
 }
