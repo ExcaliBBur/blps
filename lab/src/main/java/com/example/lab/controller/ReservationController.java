@@ -6,6 +6,11 @@ import com.example.lab.dto.reservation.ReservationResponse;
 import com.example.lab.model.entity.Reservation;
 import com.example.lab.service.ReservationService;
 import com.example.lab.service.TicketService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/routes/{route}/tickets")
+@Tag(name = "reservations", description = "Контроллер для работы с бронью")
 @Validated
 @RequiredArgsConstructor
 public class ReservationController {
@@ -25,6 +31,15 @@ public class ReservationController {
 
     @PostMapping("/{seat}")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Создать бронь")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "409", description = "Билет уже забронирован",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Билета или пользователя не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<ReservationResponse> createReservation(
             @PathVariable
             Long route,
@@ -46,6 +61,13 @@ public class ReservationController {
 
     @PatchMapping("/{seat}/reservation/status")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Изменить статус оплаты брони")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Брони не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<ReservationResponse> updateReservationStatus(
             @PathVariable
             Long route,
@@ -60,6 +82,13 @@ public class ReservationController {
 
     @DeleteMapping("/{seat}/reservation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Удалить бронь")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Брони не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<Void> deleteReservation(
             @PathVariable
             Long route,
@@ -71,6 +100,13 @@ public class ReservationController {
 
     @GetMapping("/{seat}/reservation")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить информацию о брони")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Брони не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<ReservationResponse> getReservation(
             @PathVariable
             Long route,

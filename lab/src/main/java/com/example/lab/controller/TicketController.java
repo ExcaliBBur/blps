@@ -9,6 +9,11 @@ import com.example.lab.dto.ticket.TicketResponse;
 import com.example.lab.dto.ticket.UpdateTicketRequest;
 import com.example.lab.model.entity.Ticket;
 import com.example.lab.service.TicketService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +25,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @RestController
+@Tag(name = "tickets", description = "Контроллер для работы с билетами")
 @Validated
 @RequiredArgsConstructor
 public class TicketController {
@@ -29,6 +35,13 @@ public class TicketController {
 
     @PostMapping("/routes/{route}/tickets")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Создать билет")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Маршрута не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<TicketResponse> createTicket(
             @PathVariable
             Long route,
@@ -44,6 +57,9 @@ public class TicketController {
 
     @GetMapping("/tickets")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить билеты")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public Mono<PageTicketResponse> getTickets(
             @Valid
             TicketFilter filter,
@@ -66,6 +82,9 @@ public class TicketController {
 
     @GetMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить билет")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public Mono<TicketResponse> getTicket(
             @PathVariable
             Long route,
@@ -78,6 +97,15 @@ public class TicketController {
 
     @PatchMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Изменить билет")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Билета не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "200", description = "Билет успешно изменён",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<TicketResponse> updateTicket(
             @PathVariable
             Long route,
@@ -95,6 +123,13 @@ public class TicketController {
 
     @DeleteMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Удалить билет")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Билета не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<Void> deleteTicket(
             @PathVariable
             Long route,

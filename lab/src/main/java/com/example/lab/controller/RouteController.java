@@ -8,6 +8,11 @@ import com.example.lab.dto.route.RouteResponse;
 import com.example.lab.dto.route.UpdateRouteRequest;
 import com.example.lab.model.entity.Route;
 import com.example.lab.service.RouteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/routes")
+@Tag(name = "routes", description = "Контроллер для работы с маршрутами")
 @Validated
 @RequiredArgsConstructor
 public class RouteController {
@@ -29,6 +35,9 @@ public class RouteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Создать маршрут")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public Mono<RouteResponse> createRoute(
             @RequestBody
             @Valid
@@ -42,6 +51,9 @@ public class RouteController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить маршруты")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public Mono<PageRouteResponse> getRoutes(
             @Valid
             PaginationRequest request
@@ -62,6 +74,9 @@ public class RouteController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить маршрут")
+    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+            content = @Content)
     public Mono<RouteResponse> getRoutes(
             @PathVariable("id")
             Long id
@@ -72,6 +87,13 @@ public class RouteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Удалить маршрут")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Маршрута не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<Void> deleteRoute(
             @PathVariable
             Long id
@@ -81,6 +103,15 @@ public class RouteController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Изменить маршрут")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Маршрута не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "200", description = "Маршрут успешно изменён",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content)
+    })
     public Mono<RouteResponse> updateRoute(
             @PathVariable
             Long id,
