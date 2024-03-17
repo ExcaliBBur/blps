@@ -3,7 +3,7 @@ package com.example.lab.service;
 import com.example.lab.exception.EntityNotFoundException;
 import com.example.lab.model.entity.Reservation;
 import com.example.lab.model.entity.User;
-import com.example.lab.model.enumeration.UserRoleEnum;
+import com.example.lab.model.enumeration.PrivilegeEnum;
 import com.example.lab.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,10 @@ public class ReservationService {
                 .switchIfEmpty(Mono.error(
                         new EntityNotFoundException("Бронь на билет с таким id не найдена"))
                 )
-                .filter(r -> auth.getId().equals(r.getUser()) || auth.getRole().equals(UserRoleEnum.ROLE_ADMIN))
+                .filter(r -> auth.getId().equals(r.getUser()) ||
+                        auth.getAuthorities().stream()
+                                .anyMatch(a -> a.getAuthority()
+                                        .equals(PrivilegeEnum.RESERVATION_EDIT_PRIVILEGE.toString())))
                 .switchIfEmpty(Mono.error(
                         new IllegalAccessException("Недостаточно прав для получения доступа к чужой брони"))
                 );

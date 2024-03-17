@@ -1,7 +1,7 @@
 package com.example.lab.constraint.validator;
 
 import com.example.lab.constraint.UserStatusConstraint;
-import com.example.lab.model.enumeration.UserStatusEnum;
+import com.example.lab.model.enumeration.StatusEnum;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -15,7 +15,7 @@ public class UserStatusValidator implements ConstraintValidator<UserStatusConstr
         }
 
         try {
-            UserStatusEnum status = UserStatusEnum.valueOf(s);
+            StatusEnum status = StatusEnum.valueOf(s);
         } catch (Exception e) {
             return false;
         }

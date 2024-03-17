@@ -8,8 +8,8 @@ import com.example.lab.dto.user.PageUserResponse;
 import com.example.lab.dto.user.UpdateUserRequest;
 import com.example.lab.dto.user.UserResponse;
 import com.example.lab.model.entity.User;
-import com.example.lab.model.enumeration.UserRoleEnum;
-import com.example.lab.model.enumeration.UserStatusEnum;
+import com.example.lab.model.enumeration.RoleEnum;
+import com.example.lab.model.enumeration.StatusEnum;
 import com.example.lab.service.DetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -132,7 +132,7 @@ public class UserController {
             Principal principal
     ) {
         User user = userMapper.mapToUser(id);
-        user.setRole(UserRoleEnum.valueOf(role));
+        user.setRole(RoleEnum.valueOf(role));
 
         return detailsService.updateUser(user, (User) principal)
                 .map(userMapper::mapToResponse);
@@ -160,7 +160,7 @@ public class UserController {
             Principal principal
     ) {
         User user = userMapper.mapToUser(id);
-        user.setStatus(UserStatusEnum.valueOf(status));
+        user.setStatus(StatusEnum.valueOf(status));
 
         return detailsService.updateUser(user, (User) principal)
                 .map(userMapper::mapToResponse);

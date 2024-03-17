@@ -1,7 +1,7 @@
 package com.example.lab.model.entity;
 
-import com.example.lab.model.enumeration.UserRoleEnum;
-import com.example.lab.model.enumeration.UserStatusEnum;
+import com.example.lab.model.enumeration.RoleEnum;
+import com.example.lab.model.enumeration.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,9 +28,9 @@ public class User implements UserDetails {
 
     private String password;
 
-    private UserRoleEnum role = UserRoleEnum.ROLE_USER;
+    private RoleEnum role = RoleEnum.ROLE_USER;
 
-    private UserStatusEnum status = UserStatusEnum.ACTIVE;
+    private StatusEnum status = StatusEnum.ACTIVE;
 
     private List<? extends GrantedAuthority> authorities;
 
@@ -69,6 +69,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return status.equals(UserStatusEnum.ACTIVE);
+        return status.equals(StatusEnum.ACTIVE);
     }
 }

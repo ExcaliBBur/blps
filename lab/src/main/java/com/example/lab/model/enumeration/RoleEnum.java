@@ -1,6 +1,6 @@
 package com.example.lab.model.enumeration;
 
-public enum UserRoleEnum {
+public enum RoleEnum {
     ROLE_ADMIN,
     ROLE_MODERATOR,
     ROLE_USER

@@ -3,7 +3,7 @@ package com.example.lab.service;
 import com.example.lab.exception.EntityNotFoundException;
 import com.example.lab.exception.IllegalAccessException;
 import com.example.lab.model.entity.User;
-import com.example.lab.model.enumeration.UserRoleEnum;
+import com.example.lab.model.enumeration.PrivilegeEnum;
 import com.example.lab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +61,9 @@ public class DetailsService implements ReactiveUserDetailsService {
     public Mono<User> updateUser(User updated, User auth) {
         return getUserById(updated.getId())
                 .filter(user -> user.getId().equals(auth.getId()) ||
-                        auth.getRole().equals(UserRoleEnum.ROLE_ADMIN))
+                        auth.getAuthorities().stream()
+                                .anyMatch(a -> a.getAuthority()
+                                        .equals(PrivilegeEnum.USER_EDIT_PRIVILEGE.toString())))
                 .switchIfEmpty(Mono.error(
                         new IllegalAccessException("Недостаточно прав для редактирования другого пользователя"))
                 )

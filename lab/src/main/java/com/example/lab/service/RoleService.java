@@ -2,7 +2,6 @@ package com.example.lab.service;
 
 import com.example.lab.exception.EntityNotFoundException;
 import com.example.lab.model.entity.Role;
-import com.example.lab.model.enumeration.UserRoleEnum;
 import com.example.lab.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

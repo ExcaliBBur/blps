@@ -11,6 +11,16 @@
         </insert>
 
         <insert tableName="role_privilege">
+            <column name="role_id" value="1"/>
+            <column name="privilege_id" value="15"/>
+        </insert>
+
+        <insert tableName="role_privilege">
+            <column name="role_id" value="1"/>
+            <column name="privilege_id" value="16"/>
+        </insert>
+
+        <insert tableName="role_privilege">
             <column name="role_id" value="2"/>
             <column name="privilege_id" value="2"/>
         </insert>
