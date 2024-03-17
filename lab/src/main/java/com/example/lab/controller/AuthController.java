@@ -32,7 +32,7 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "Логин уже занят",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-                    content = @Content)
+                    content = @Content),
     })
     public Mono<ResponseJwt> createUser(
             @RequestBody

@@ -25,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -41,8 +42,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
     @Operation(summary = "Получить пользователей")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<PageUserResponse> getUsers(
             @Valid
             PaginationRequest request
@@ -65,8 +70,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
     @Operation(summary = "Получить пользователя")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<UserResponse> getUser(
             @PathVariable
             Long id
@@ -83,6 +92,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Пользователя не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<UserResponse> updateUser(
@@ -90,11 +101,12 @@ public class UserController {
             Long id,
             @RequestBody
             @Valid
-            UpdateUserRequest request
+            UpdateUserRequest request,
+            Principal principal
     ) {
         User user = userMapper.mapToUser(request, id);
 
-        return detailsService.updateUser(user)
+        return detailsService.updateUser(user, (User) principal)
                 .map(userMapper::mapToResponse);
     }
 
@@ -106,6 +118,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Пользователя не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<UserResponse> updateUserRole(
@@ -114,12 +128,13 @@ public class UserController {
             @RequestBody
             @Valid
             @UserRoleConstraint
-            String role
+            String role,
+            Principal principal
     ) {
         User user = userMapper.mapToUser(id);
         user.setRole(UserRoleEnum.valueOf(role));
 
-        return detailsService.updateUser(user)
+        return detailsService.updateUser(user, (User) principal)
                 .map(userMapper::mapToResponse);
     }
 
@@ -131,6 +146,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Пользователя не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<UserResponse> updateUserStatus(
@@ -139,12 +156,13 @@ public class UserController {
             @RequestBody
             @Valid
             @UserStatusConstraint
-            String status
+            String status,
+            Principal principal
     ) {
         User user = userMapper.mapToUser(id);
         user.setStatus(UserStatusEnum.valueOf(status));
 
-        return detailsService.updateUser(user)
+        return detailsService.updateUser(user, (User) principal)
                 .map(userMapper::mapToResponse);
     }
 

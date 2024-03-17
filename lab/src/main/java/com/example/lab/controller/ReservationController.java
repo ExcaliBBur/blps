@@ -1,9 +1,9 @@
 package com.example.lab.controller;
 
 import com.example.lab.dto.mapper.ReservationMapper;
-import com.example.lab.dto.reservation.CreateReservationRequest;
 import com.example.lab.dto.reservation.ReservationResponse;
 import com.example.lab.model.entity.Reservation;
+import com.example.lab.model.entity.User;
 import com.example.lab.service.ReservationService;
 import com.example.lab.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +18,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/routes/{route}/tickets")
@@ -40,6 +42,8 @@ public class ReservationController {
             @ApiResponse(responseCode = "404", description = "Билета или пользователя не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<ReservationResponse> createReservation(
@@ -47,11 +51,10 @@ public class ReservationController {
             Long route,
             @PathVariable
             Integer seat,
-            @RequestBody
-            @Valid
-            CreateReservationRequest request
+            Principal principal
     ) {
-        Reservation reservation = reservationMapper.mapToReservation(request);
+        User user = (User) principal;
+        Reservation reservation = reservationMapper.mapToReservation(user.getId());
 
         return ticketService.getTicketByRouteAndSeat(route, seat)
                 .flatMap(t -> {
@@ -69,6 +72,8 @@ public class ReservationController {
             @ApiResponse(responseCode = "404", description = "Брони не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<ReservationResponse> updateReservationStatus(
@@ -77,9 +82,10 @@ public class ReservationController {
             @PathVariable
             Integer seat,
             @RequestBody
-            Boolean bought
+            Boolean bought,
+            Principal principal
     ) {
-        return reservationService.updateReservationStatus(route, seat, bought)
+        return reservationService.updateReservationStatus(route, seat, bought, (User) principal)
                 .map(reservationMapper::mapToResponse);
     }
 
@@ -91,15 +97,18 @@ public class ReservationController {
             @ApiResponse(responseCode = "404", description = "Брони не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<Void> deleteReservation(
             @PathVariable
             Long route,
             @PathVariable
-            Integer seat
+            Integer seat,
+            Principal principal
     ) {
-        return reservationService.deleteReservation(route, seat);
+        return reservationService.deleteReservation(route, seat, (User) principal);
     }
 
     @GetMapping("/{seat}/reservation")
@@ -110,15 +119,18 @@ public class ReservationController {
             @ApiResponse(responseCode = "404", description = "Брони не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<ReservationResponse> getReservation(
             @PathVariable
             Long route,
             @PathVariable
-            Integer seat
+            Integer seat,
+            Principal principal
     ) {
-        return reservationService.getReservationByRouteAndSeat(route, seat)
+        return reservationService.getReservationByRouteAndSeat(route, seat, (User) principal)
                 .map(reservationMapper::mapToResponse);
     }
 

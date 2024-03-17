@@ -38,8 +38,12 @@ public class RouteController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ROUTE_CREATE_PRIVILEGE')")
     @Operation(summary = "Создать маршрут")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<RouteResponse> createRoute(
             @RequestBody
             @Valid
@@ -55,8 +59,12 @@ public class RouteController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ROUTE_READ_PRIVILEGE')")
     @Operation(summary = "Получить маршруты")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<PageRouteResponse> getRoutes(
             @Valid
             PaginationRequest request
@@ -79,8 +87,12 @@ public class RouteController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ROUTE_READ_PRIVILEGE')")
     @Operation(summary = "Получить маршрут")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<RouteResponse> getRoutes(
             @PathVariable("id")
             Long id
@@ -97,6 +109,8 @@ public class RouteController {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<Void> deleteRoute(
@@ -116,6 +130,8 @@ public class RouteController {
             @ApiResponse(responseCode = "200", description = "Маршрут успешно изменён",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<RouteResponse> updateRoute(
