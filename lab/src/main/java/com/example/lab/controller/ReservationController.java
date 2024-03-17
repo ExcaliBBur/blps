@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -31,6 +32,7 @@ public class ReservationController {
 
     @PostMapping("/{seat}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('RESERVATION_CREATE_PRIVILEGE')")
     @Operation(summary = "Создать бронь")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "409", description = "Билет уже забронирован",
@@ -61,6 +63,7 @@ public class ReservationController {
 
     @PatchMapping("/{seat}/reservation/status")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('RESERVATION_STATUS_UPDATE_PRIVILEGE')")
     @Operation(summary = "Изменить статус оплаты брони")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Брони не существует",
@@ -82,6 +85,7 @@ public class ReservationController {
 
     @DeleteMapping("/{seat}/reservation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('RESERVATION_DELETE_PRIVILEGE')")
     @Operation(summary = "Удалить бронь")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Брони не существует",
@@ -100,6 +104,7 @@ public class ReservationController {
 
     @GetMapping("/{seat}/reservation")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('RESERVATION_READ_PRIVILEGE')")
     @Operation(summary = "Получить информацию о брони")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Брони не существует",

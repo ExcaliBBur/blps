@@ -15,11 +15,9 @@ import reactor.core.publisher.Mono;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final RouteService routeService;
 
     public Mono<Ticket> createTicket(Ticket ticket) {
-        return routeService.routeExistsById(ticket.getRoute())
-                .flatMap(r -> ticketRepository.save(ticket));
+        return ticketRepository.save(ticket);
     }
 
     public Flux<Ticket> getTickets(TicketFilter filter, Pageable pageable) {
@@ -49,17 +47,6 @@ public class TicketService {
     public Mono<Void> deleteTicket(Long route, Integer seat) {
         return getTicketByRouteAndSeat(route, seat)
                 .flatMap(ticketRepository::delete);
-    }
-
-    public Mono<Ticket> getTicketById(Long id) {
-        return ticketRepository.findById(id)
-                .switchIfEmpty(Mono.error(new EntityNotFoundException("Билета с таким id не существует")));
-    }
-
-    public Mono<Boolean> ticketExistsById(Long id) {
-        return ticketRepository.existsById(id)
-                .flatMap(exists -> exists ? Mono.just(true) :
-                        Mono.error(new EntityNotFoundException("Билета с таким id не существует")));
     }
 
     public Mono<Long> countTickets(TicketFilter ticketFilter) {

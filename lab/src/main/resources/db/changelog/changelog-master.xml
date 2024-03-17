@@ -7,4 +7,13 @@
     <include file="/db/changelog/changes/17-02-2024--2-create-ticket-table.xml"/>
     <include file="/db/changelog/changes/17-02-2024--3-create-user-table.xml"/>
     <include file="/db/changelog/changes/17-02-2024--4-create-reservation-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--1-create-privilege-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--2-create-role-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--3-create-role-privilege-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--4-create-user-role-table.xml"/>
+    <include file="/db/changelog/changes/17-03-2024--1-create-role-role-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--5-create-privileges.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--6-create-roles.xml"/>
+    <include file="/db/changelog/changes/17-03-2024--2-create-role-privilege.xml"/>
+    <include file="/db/changelog/changes/17-03-2024--3-create-role-role.xml"/>
 </databaseChangeLog>

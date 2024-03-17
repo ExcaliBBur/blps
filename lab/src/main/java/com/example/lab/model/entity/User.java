@@ -1,14 +1,17 @@
 package com.example.lab.model.entity;
 
-import com.example.lab.model.enumeration.UserRole;
-import com.example.lab.model.enumeration.UserStatus;
+import com.example.lab.model.enumeration.UserRoleEnum;
+import com.example.lab.model.enumeration.UserStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table(name = "_user")
@@ -16,22 +19,24 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User {
+public class User implements UserDetails {
 
     @Id
     private Long id;
 
-    private String login;
+    private String username;
 
     private String password;
 
-    private UserRole role = UserRole.USER;
+    private UserRoleEnum role = UserRoleEnum.ROLE_USER;
 
-    private UserStatus status = UserStatus.ACTIVE;
+    private UserStatusEnum status = UserStatusEnum.ACTIVE;
+
+    private List<? extends GrantedAuthority> authorities;
 
     public void setUser(User user) {
-        if (Objects.nonNull(user.login)) {
-            this.login = user.login;
+        if (Objects.nonNull(user.username)) {
+            this.username = user.username;
         }
 
         if (Objects.nonNull(user.password)) {
@@ -47,4 +52,23 @@ public class User {
         }
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return status.equals(UserStatusEnum.ACTIVE);
+    }
 }

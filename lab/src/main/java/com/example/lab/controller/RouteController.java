@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -35,6 +36,7 @@ public class RouteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ROUTE_CREATE_PRIVILEGE')")
     @Operation(summary = "Создать маршрут")
     @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
             content = @Content)
@@ -51,6 +53,7 @@ public class RouteController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_READ_PRIVILEGE')")
     @Operation(summary = "Получить маршруты")
     @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
             content = @Content)
@@ -74,6 +77,7 @@ public class RouteController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_READ_PRIVILEGE')")
     @Operation(summary = "Получить маршрут")
     @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
             content = @Content)
@@ -87,6 +91,7 @@ public class RouteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROUTE_DELETE_PRIVILEGE')")
     @Operation(summary = "Удалить маршрут")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
@@ -103,6 +108,7 @@ public class RouteController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_UPDATE_PRIVILEGE')")
     @Operation(summary = "Изменить маршрут")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",

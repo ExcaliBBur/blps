@@ -13,13 +13,9 @@ import reactor.core.publisher.Mono;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final TicketService ticketService;
-    private final UserService userService;
 
     public Mono<Reservation> createReservation(Reservation reservation) {
-        return userService.userExistsById(reservation.getUser())
-                .flatMap(u -> ticketService.ticketExistsById(reservation.getTicket()))
-                .flatMap(t -> reservationRepository.save(reservation));
+        return reservationRepository.save(reservation);
     }
 
     @Transactional

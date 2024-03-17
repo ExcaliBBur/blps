@@ -4,24 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("route_ticket")
+@Table(name = "role_privilege")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class RouteTicket {
+public class RolePrivilege {
 
-    @Id
     private Long id;
 
-    @Column("route_id")
-    private Long route;
+    @Column("role_id")
+    private Long role;
 
-    @Column("ticket_id")
-    private Long ticket;
+    @Column("role_id")
+    private Long privilege;
 
 }

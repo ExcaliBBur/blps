@@ -1,7 +1,7 @@
 package com.example.lab.dto.user;
 
-import com.example.lab.model.enumeration.UserRole;
-import com.example.lab.model.enumeration.UserStatus;
+import com.example.lab.model.enumeration.UserRoleEnum;
+import com.example.lab.model.enumeration.UserStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,10 +11,10 @@ public class UserResponse {
 
     private Long id;
 
-    private String login;
+    private String username;
 
-    private UserRole role;
+    private UserRoleEnum role;
 
-    private UserStatus status;
+    private UserStatusEnum status;
 
 }
