@@ -7,14 +7,11 @@ import com.example.lab.model.enumeration.PrivilegeEnum;
 import com.example.lab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +28,7 @@ public class DetailsService implements ReactiveUserDetailsService {
                         .flatMap(role -> privilegeService.findPrivilegesByRoleId(role.getId())
                                 .collectList()
                                 .map(privileges -> {
-                                    user.setAuthorities(privileges.stream()
-                                            .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
-                                            .collect(Collectors.toList()));
+                                    user.setAuthorities(privileges);
                                     return (UserDetails) user;
                                 })
                         )

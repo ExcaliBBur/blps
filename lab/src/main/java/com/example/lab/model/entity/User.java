@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,7 @@ public class User implements UserDetails {
 
     private StatusEnum status = StatusEnum.ACTIVE;
 
+    @Transient
     private List<? extends GrantedAuthority> authorities;
 
     public void setUser(User user) {

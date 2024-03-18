@@ -9,7 +9,7 @@
                 <constraints
                         primaryKey="true"/>
             </column>
-            <column name="login" type="VARCHAR">
+            <column name="username" type="VARCHAR">
                 <constraints
                         nullable="false"
                         unique="true"/>

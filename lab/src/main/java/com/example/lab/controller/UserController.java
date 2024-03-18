@@ -138,7 +138,7 @@ public class UserController {
                 .map(userMapper::mapToResponse);
     }
 
-    @PatchMapping("/{id}/role")
+    @PatchMapping("/{id}/status")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER_UPDATE_PRIVILEGE')")
     @Operation(summary = "Изменить статус пользователя")

@@ -1,16 +1,14 @@
 package com.example.lab.service;
 
 import com.example.lab.dto.jwt.ResponseJwt;
+import com.example.lab.exception.IllegalAccessException;
 import com.example.lab.model.entity.User;
-import com.example.lab.model.entity.UserRole;
+import com.example.lab.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import utils.jwt.JwtUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +18,6 @@ import java.util.Map;
 public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final DetailsService detailsService;
     private final JwtUtils jwtUtils;
 
@@ -32,15 +29,11 @@ public class AuthService {
                 .map(ResponseJwt::new);
     }
 
-    public Mono<ResponseJwt> authenticate(User user) {
-        return Mono.fromCallable(() -> authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-                ))
-                .flatMap(authentication -> {
-                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                    return generateAccessToken(userDetails)
-                            .map(ResponseJwt::new);
-                });
+    public Mono<ResponseJwt> authenticate(User auth) {
+        return detailsService.findByUsername(auth.getUsername())
+                .filter(user -> passwordEncoder.matches(auth.getPassword(), user.getPassword()))
+                .switchIfEmpty(Mono.error(new IllegalAccessException("Несовпадение паролей")))
+                .flatMap(user -> generateAccessToken(user).map(ResponseJwt::new));
     }
 
     private Mono<String> generateAccessToken(UserDetails user) {

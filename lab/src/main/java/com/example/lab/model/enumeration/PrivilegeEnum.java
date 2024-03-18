@@ -1,6 +1,7 @@
 package com.example.lab.model.enumeration;
 
 public enum PrivilegeEnum {
+
     RESERVATION_CREATE_PRIVILEGE,
     RESERVATION_STATUS_UPDATE_PRIVILEGE,
     RESERVATION_DELETE_PRIVILEGE,
@@ -16,5 +17,6 @@ public enum PrivilegeEnum {
     USER_UPDATE_PRIVILEGE,
     USER_PROMOTE_PRIVILEGE,
     USER_EDIT_PRIVILEGE,
-    RESERVATION_EDIT_PRIVILEGE
+    RESERVATION_EDIT_PRIVILEGE;
+
 }
