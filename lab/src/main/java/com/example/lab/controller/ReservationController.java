@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -82,10 +81,9 @@ public class ReservationController {
             @PathVariable
             Integer seat,
             @RequestBody
-            Boolean bought,
-            Principal principal
+            Boolean bought
     ) {
-        return reservationService.updateReservationStatus(route, seat, bought, (User) principal)
+        return reservationService.updateReservationStatus(route, seat, bought)
                 .map(reservationMapper::mapToResponse);
     }
 
@@ -105,10 +103,9 @@ public class ReservationController {
             @PathVariable
             Long route,
             @PathVariable
-            Integer seat,
-            Principal principal
+            Integer seat
     ) {
-        return reservationService.deleteReservation(route, seat, (User) principal);
+        return reservationService.deleteReservation(route, seat);
     }
 
     @GetMapping("/{seat}/reservation")
@@ -127,10 +124,9 @@ public class ReservationController {
             @PathVariable
             Long route,
             @PathVariable
-            Integer seat,
-            Principal principal
+            Integer seat
     ) {
-        return reservationService.getReservationByRouteAndSeat(route, seat, (User) principal)
+        return reservationService.getReservationByRouteAndSeat(route, seat)
                 .map(reservationMapper::mapToResponse);
     }
 

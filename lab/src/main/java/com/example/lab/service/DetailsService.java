@@ -7,8 +7,12 @@ import com.example.lab.model.enumeration.PrivilegeEnum;
 import com.example.lab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,6 +24,7 @@ public class DetailsService implements ReactiveUserDetailsService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PrivilegeService privilegeService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
@@ -53,19 +58,24 @@ public class DetailsService implements ReactiveUserDetailsService {
                 .switchIfEmpty(Mono.error(new EntityNotFoundException("Пользователя с таким именем не существует")));
     }
 
-    public Mono<User> updateUser(User updated, User auth) {
-        return getUserById(updated.getId())
-                .filter(user -> user.getId().equals(auth.getId()) ||
-                        auth.getAuthorities().stream()
-                                .anyMatch(a -> a.getAuthority()
-                                        .equals(PrivilegeEnum.USER_EDIT_PRIVILEGE.toString())))
-                .switchIfEmpty(Mono.error(
-                        new IllegalAccessException("Недостаточно прав для редактирования другого пользователя"))
-                )
-                .flatMap(u -> {
-                    u.setUser(updated);
-                    return userRepository.save(u);
-                });
+    public Mono<User> updateUser(User updated) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .cast(User.class)
+                .flatMap(auth -> getUserById(updated.getId())
+                        .filter(u -> u.getId().equals(auth.getId()) || hasEditPrivilege(auth))
+                        .switchIfEmpty(Mono.error(new IllegalAccessException("Недостаточно прав для редактирования другого пользователя")))
+                        .flatMap(u -> {
+                                u.setUser(updated);
+                                u.setPassword(passwordEncoder.encode(u.getPassword()));
+                                return userRepository.save(u);
+                        }));
+    }
+
+    private boolean hasEditPrivilege(User auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(PrivilegeEnum.USER_EDIT_PRIVILEGE.toString()));
     }
 
     public Mono<Long> countUsers() {

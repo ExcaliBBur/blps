@@ -25,7 +25,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -101,12 +100,11 @@ public class UserController {
             Long id,
             @RequestBody
             @Valid
-            UpdateUserRequest request,
-            Principal principal
+            UpdateUserRequest request
     ) {
         User user = userMapper.mapToUser(request, id);
 
-        return detailsService.updateUser(user, (User) principal)
+        return detailsService.updateUser(user)
                 .map(userMapper::mapToResponse);
     }
 
@@ -128,13 +126,12 @@ public class UserController {
             @RequestBody
             @Valid
             @UserRoleConstraint
-            String role,
-            Principal principal
+            String role
     ) {
         User user = userMapper.mapToUser(id);
         user.setRole(RoleEnum.valueOf(role));
 
-        return detailsService.updateUser(user, (User) principal)
+        return detailsService.updateUser(user)
                 .map(userMapper::mapToResponse);
     }
 
@@ -156,13 +153,12 @@ public class UserController {
             @RequestBody
             @Valid
             @UserStatusConstraint
-            String status,
-            Principal principal
+            String status
     ) {
         User user = userMapper.mapToUser(id);
         user.setStatus(StatusEnum.valueOf(status));
 
-        return detailsService.updateUser(user, (User) principal)
+        return detailsService.updateUser(user)
                 .map(userMapper::mapToResponse);
     }
 
