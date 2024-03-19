@@ -1,7 +1,7 @@
 package com.example.lab.constraint.validator;
 
 import com.example.lab.constraint.UserRoleConstraint;
-import com.example.lab.model.enumeration.UserRole;
+import com.example.lab.model.enumeration.RoleEnum;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -15,7 +15,7 @@ public class UserRoleValidator implements ConstraintValidator<UserRoleConstraint
         }
 
         try {
-            UserRole role = UserRole.valueOf(s);
+            RoleEnum role = RoleEnum.valueOf(s);
         } catch (Exception e) {
             return false;
         }

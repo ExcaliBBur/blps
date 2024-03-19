@@ -22,4 +22,6 @@ public interface UserRepository extends ReactiveCrudRepository<User, Long> {
             "limit :pageSize offset :pageNumber * :pageSize + 1)")
     Mono<Boolean> hasNextPage(Integer pageSize, Integer pageNumber);
 
+    Mono<User> findByUsername(String username);
+
 }

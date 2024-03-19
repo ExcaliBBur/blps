@@ -1,6 +1,6 @@
 package com.example.lab.dto.mapper;
 
-import com.example.lab.dto.user.CreateUserRequest;
+import com.example.lab.dto.user.AuthenticateUserRequest;
 import com.example.lab.dto.user.UpdateUserRequest;
 import com.example.lab.dto.user.UserResponse;
 import com.example.lab.model.entity.User;
@@ -9,7 +9,9 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    User mapToUser(CreateUserRequest request);
+    User mapToUser(AuthenticateUserRequest request);
+
+    User mapToUser(Long id);
 
     User mapToUser(UpdateUserRequest request, Long id);
 

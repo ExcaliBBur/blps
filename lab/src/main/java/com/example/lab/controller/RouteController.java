@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -35,9 +36,14 @@ public class RouteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ROUTE_CREATE_PRIVILEGE')")
     @Operation(summary = "Создать маршрут")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<RouteResponse> createRoute(
             @RequestBody
             @Valid
@@ -51,9 +57,14 @@ public class RouteController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_READ_PRIVILEGE')")
     @Operation(summary = "Получить маршруты")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<PageRouteResponse> getRoutes(
             @Valid
             PaginationRequest request
@@ -74,9 +85,14 @@ public class RouteController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_READ_PRIVILEGE')")
     @Operation(summary = "Получить маршрут")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<RouteResponse> getRoutes(
             @PathVariable("id")
             Long id
@@ -87,11 +103,14 @@ public class RouteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROUTE_DELETE_PRIVILEGE')")
     @Operation(summary = "Удалить маршрут")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<Void> deleteRoute(
@@ -103,6 +122,7 @@ public class RouteController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_UPDATE_PRIVILEGE')")
     @Operation(summary = "Изменить маршрут")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
@@ -110,6 +130,8 @@ public class RouteController {
             @ApiResponse(responseCode = "200", description = "Маршрут успешно изменён",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<RouteResponse> updateRoute(

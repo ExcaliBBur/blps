@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -35,11 +36,14 @@ public class TicketController {
 
     @PostMapping("/routes/{route}/tickets")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('TICKET_CREATE_PRIVILEGE')")
     @Operation(summary = "Создать билет")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<TicketResponse> createTicket(
@@ -57,9 +61,14 @@ public class TicketController {
 
     @GetMapping("/tickets")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('TICKET_READ_PRIVILEGE')")
     @Operation(summary = "Получить билеты")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<PageTicketResponse> getTickets(
             @Valid
             TicketFilter filter,
@@ -82,9 +91,14 @@ public class TicketController {
 
     @GetMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('TICKET_READ_PRIVILEGE')")
     @Operation(summary = "Получить билет")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<TicketResponse> getTicket(
             @PathVariable
             Long route,
@@ -97,6 +111,7 @@ public class TicketController {
 
     @PatchMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('TICKET_UPDATE_PRIVILEGE')")
     @Operation(summary = "Изменить билет")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Билета не существует",
@@ -104,6 +119,8 @@ public class TicketController {
             @ApiResponse(responseCode = "200", description = "Билет успешно изменён",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<TicketResponse> updateTicket(
@@ -123,11 +140,14 @@ public class TicketController {
 
     @DeleteMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('TICKET_DELETE_PRIVILEGE')")
     @Operation(summary = "Удалить билет")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Билета не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<Void> deleteTicket(

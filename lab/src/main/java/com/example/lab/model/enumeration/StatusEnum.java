@@ -1,6 +1,6 @@
 package com.example.lab.model.enumeration;
 
-public enum UserStatus {
+public enum StatusEnum {
     ACTIVE,
     INACTIVE
 }

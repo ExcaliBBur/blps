@@ -1,13 +1,16 @@
 package com.example.lab.controller;
 
+import com.example.lab.constraint.UserRoleConstraint;
+import com.example.lab.constraint.UserStatusConstraint;
 import com.example.lab.dto.mapper.UserMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
-import com.example.lab.dto.user.CreateUserRequest;
 import com.example.lab.dto.user.PageUserResponse;
 import com.example.lab.dto.user.UpdateUserRequest;
 import com.example.lab.dto.user.UserResponse;
 import com.example.lab.model.entity.User;
-import com.example.lab.service.UserService;
+import com.example.lab.model.enumeration.RoleEnum;
+import com.example.lab.model.enumeration.StatusEnum;
+import com.example.lab.service.DetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +20,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -30,47 +34,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final DetailsService detailsService;
     private final UserMapper userMapper;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Создать пользователя")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "409", description = "Логин уже занят",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-                    content = @Content)
-    })
-    public Mono<UserResponse> createUser(
-            @RequestBody
-            @Valid
-            CreateUserRequest request
-    ) {
-        User user = userMapper.mapToUser(request);
-
-        return userService.createUser(user)
-                .map(userMapper::mapToResponse);
-    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
     @Operation(summary = "Получить пользователей")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<PageUserResponse> getUsers(
             @Valid
             PaginationRequest request
     ) {
         Pageable pageable = request.formPageRequest();
 
-        Mono<List<UserResponse>> routesMono = userService.getUsers(pageable)
+        Mono<List<UserResponse>> routesMono = detailsService.getUsers(pageable)
                 .map(userMapper::mapToResponse)
                 .collectList();
 
-        Mono<Long> totalRoutesMono = userService.countUsers();
+        Mono<Long> totalRoutesMono = detailsService.countUsers();
 
-        Mono<Boolean> hasNextPageMono = userService.hasNextPage(pageable);
+        Mono<Boolean> hasNextPageMono = detailsService.hasNextPage(pageable);
 
         return Mono.zip(routesMono, totalRoutesMono, hasNextPageMono)
                 .map(tuple -> new PageUserResponse(tuple.getT1(), tuple.getT2(), tuple.getT3()));
@@ -78,24 +67,32 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
     @Operation(summary = "Получить пользователя")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
     public Mono<UserResponse> getUser(
             @PathVariable
             Long id
     ) {
-        return userService.getUserById(id)
+        return detailsService.getUserById(id)
                 .map(userMapper::mapToResponse);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER_UPDATE_PRIVILEGE')")
     @Operation(summary = "Изменить пользователя")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Пользователя не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
     public Mono<UserResponse> updateUser(
@@ -107,7 +104,62 @@ public class UserController {
     ) {
         User user = userMapper.mapToUser(request, id);
 
-        return userService.updateUser(user)
+        return detailsService.updateUser(user)
                 .map(userMapper::mapToResponse);
     }
+
+    @PatchMapping("/{id}/role")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER_PROMOTE_PRIVILEGE')")
+    @Operation(summary = "Изменить роль пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Пользователя не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
+    public Mono<UserResponse> updateUserRole(
+            @PathVariable
+            Long id,
+            @RequestBody
+            @Valid
+            @UserRoleConstraint
+            String role
+    ) {
+        User user = userMapper.mapToUser(id);
+        user.setRole(RoleEnum.valueOf(role));
+
+        return detailsService.updateUser(user)
+                .map(userMapper::mapToResponse);
+    }
+
+    @PatchMapping("/{id}/status")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER_UPDATE_PRIVILEGE')")
+    @Operation(summary = "Изменить статус пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Пользователя не существует",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
+    public Mono<UserResponse> updateUserStatus(
+            @PathVariable
+            Long id,
+            @RequestBody
+            @Valid
+            @UserStatusConstraint
+            String status
+    ) {
+        User user = userMapper.mapToUser(id);
+        user.setStatus(StatusEnum.valueOf(status));
+
+        return detailsService.updateUser(user)
+                .map(userMapper::mapToResponse);
+    }
+
 }

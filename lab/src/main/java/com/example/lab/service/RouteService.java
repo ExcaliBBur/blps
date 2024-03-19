@@ -41,12 +41,6 @@ public class RouteService {
                 });
     }
 
-    public Mono<Boolean> routeExistsById(Long id) {
-        return routeRepository.existsById(id)
-                .flatMap(exists -> exists ? Mono.just(true) :
-                        Mono.error(new EntityNotFoundException("Маршрута с таким id не найдено")));
-    }
-
     public Mono<Long> countRoutes() {
         return routeRepository.getRoutesCount();
     }

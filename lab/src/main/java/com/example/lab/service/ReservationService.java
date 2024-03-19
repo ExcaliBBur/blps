@@ -1,9 +1,15 @@
 package com.example.lab.service;
 
 import com.example.lab.exception.EntityNotFoundException;
+import com.example.lab.exception.IllegalAccessException;
 import com.example.lab.model.entity.Reservation;
+import com.example.lab.model.entity.User;
+import com.example.lab.model.enumeration.PrivilegeEnum;
 import com.example.lab.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -13,13 +19,9 @@ import reactor.core.publisher.Mono;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final TicketService ticketService;
-    private final UserService userService;
 
     public Mono<Reservation> createReservation(Reservation reservation) {
-        return userService.userExistsById(reservation.getUser())
-                .flatMap(u -> ticketService.ticketExistsById(reservation.getTicket()))
-                .flatMap(t -> reservationRepository.save(reservation));
+        return reservationRepository.save(reservation);
     }
 
     @Transactional
@@ -37,8 +39,21 @@ public class ReservationService {
     }
 
     public Mono<Reservation> getReservationByRouteAndSeat(Long route, Integer seat) {
-        return reservationRepository.findReservationByTicket(route, seat)
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .cast(User.class)
+                .flatMap(auth -> reservationRepository.findReservationByTicket(route, seat)
+                        .filter(reservation -> auth.getId().equals(reservation.getUser()) || hasEditPrivilege(auth))
+                        .switchIfEmpty(Mono.error(new IllegalAccessException("Недостаточно прав для получения доступа к чужой брони")))
+                        .flatMap(Mono::just)
+                )
                 .switchIfEmpty(Mono.error(new EntityNotFoundException("Бронь на билет с таким id не найдена")));
+    }
+
+    private boolean hasEditPrivilege(User auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(PrivilegeEnum.RESERVATION_EDIT_PRIVILEGE.toString()));
     }
 
 }
