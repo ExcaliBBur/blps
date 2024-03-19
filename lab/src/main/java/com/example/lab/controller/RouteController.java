@@ -15,10 +15,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -34,71 +36,93 @@ public class RouteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ROUTE_CREATE_PRIVILEGE')")
     @Operation(summary = "Создать маршрут")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
-    public RouteResponse createRoute(
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
+    public Mono<RouteResponse> createRoute(
             @RequestBody
             @Valid
             CreateRouteRequest request
     ) {
         Route route = routeMapper.mapToRoute(request);
 
-        route = routeService.createRoute(route);
-
-        return routeMapper.mapToResponse(route);
+        return routeService.createRoute(route)
+                .map(routeMapper::mapToResponse);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_READ_PRIVILEGE')")
     @Operation(summary = "Получить маршруты")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
-    public PageRouteResponse getRoutes(
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
+    public Mono<PageRouteResponse> getRoutes(
             @Valid
             PaginationRequest request
     ) {
-        Page<Route> routes = routeService.getRoutes(request.formPageRequest());
-        List<RouteResponse> listRoutes = routes.getContent()
-                .stream().map(routeMapper::mapToResponse).toList();
+        Pageable pageable = request.formPageRequest();
 
-        return PageRouteResponse.builder()
-                .routeResponses(listRoutes)
-                .totalElements(routes.getTotalElements())
-                .totalPages(routes.getTotalPages())
-                .build();
+        Mono<List<RouteResponse>> routesMono = routeService.getRoutes(pageable)
+                .map(routeMapper::mapToResponse)
+                .collectList();
+
+        Mono<Long> totalRoutesMono = routeService.countRoutes();
+
+        Mono<Boolean> hasNextPageMono = routeService.hasNextPage(pageable);
+
+        return Mono.zip(routesMono, totalRoutesMono, hasNextPageMono)
+                .map(tuple -> new PageRouteResponse(tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_READ_PRIVILEGE')")
     @Operation(summary = "Получить маршрут")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
-    public RouteResponse getRoutes(
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
+    public Mono<RouteResponse> getRoutes(
             @PathVariable("id")
             Long id
     ) {
-        return routeMapper.mapToResponse(routeService.getRouteById(id));
+        return routeService.getRouteById(id)
+                .map(routeMapper::mapToResponse);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROUTE_DELETE_PRIVILEGE')")
     @Operation(summary = "Удалить маршрут")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
-    public void deleteRoute(
+    public Mono<Void> deleteRoute(
             @PathVariable
             Long id
     ) {
-        routeService.deleteRoute(id);
+        return routeService.deleteRoute(id);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROUTE_UPDATE_PRIVILEGE')")
     @Operation(summary = "Изменить маршрут")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
@@ -106,9 +130,11 @@ public class RouteController {
             @ApiResponse(responseCode = "200", description = "Маршрут успешно изменён",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
-    public RouteResponse updateRoute(
+    public Mono<RouteResponse> updateRoute(
             @PathVariable
             Long id,
             @RequestBody
@@ -117,7 +143,8 @@ public class RouteController {
     ) {
         Route route = routeMapper.mapToRoute(request, id);
 
-        return routeMapper.mapToResponse(routeService.updateRoute(route));
+        return routeService.updateRoute(route)
+                .map(routeMapper::mapToResponse);
     }
 
 }

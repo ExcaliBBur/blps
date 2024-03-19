@@ -1,17 +1,17 @@
 package com.example.lab.model.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "route")
+@Table("route")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -19,24 +19,16 @@ import java.util.Objects;
 public class Route {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "departure")
     private LocalDate departure;
 
-    @Column(name = "train_number")
+    @Column("train_number")
     private Long train;
 
-    @Column(name = "source")
     private String source;
 
-    @Column(name = "destination")
     private String destination;
-
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
-    private List<Ticket> tickets;
 
     public void setRoute(Route route) {
         if (Objects.nonNull(route.departure)) {

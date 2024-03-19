@@ -10,14 +10,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TicketMapper {
 
-    @Mapping(target = "route.id", source = "route")
     @Mapping(target = "seat", source = "request.seat")
     Ticket mapToTicket(CreateTicketRequest request, Long route);
 
-    @Mapping(target = "route.id", source = "route")
     Ticket mapToTicket(UpdateTicketRequest request, Long route, Integer seat);
 
-    @Mapping(target = "route", source = "route.id")
     TicketResponse mapToResponse(Ticket ticket);
 
 }

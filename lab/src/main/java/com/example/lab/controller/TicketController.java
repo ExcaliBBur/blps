@@ -16,10 +16,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -34,14 +36,17 @@ public class TicketController {
 
     @PostMapping("/routes/{route}/tickets")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('TICKET_CREATE_PRIVILEGE')")
     @Operation(summary = "Создать билет")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Маршрута не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
-    public TicketResponse createTicket(
+    public Mono<TicketResponse> createTicket(
             @PathVariable
             Long route,
             @RequestBody
@@ -50,49 +55,63 @@ public class TicketController {
     ) {
         Ticket ticket = ticketMapper.mapToTicket(request, route);
 
-        ticket = ticketService.createTicket(ticket);
-
-        return ticketMapper.mapToResponse(ticket);
+        return ticketService.createTicket(ticket)
+                .map(ticketMapper::mapToResponse);
     }
 
     @GetMapping("/tickets")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('TICKET_READ_PRIVILEGE')")
     @Operation(summary = "Получить билеты")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
-    public PageTicketResponse getTickets(
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
+    public Mono<PageTicketResponse> getTickets(
             @Valid
             TicketFilter filter,
             @Valid
             PaginationRequest request
     ) {
-        Page<Ticket> tickets = ticketService.getTickets(filter, request.formPageRequest());
-        List<TicketResponse> listTickets = tickets.getContent()
-                .stream().map(ticketMapper::mapToResponse).toList();
+        Pageable pageable = request.formPageRequest();
 
-        return PageTicketResponse.builder()
-                .ticketResponses(listTickets)
-                .totalElements(tickets.getTotalElements())
-                .totalPages(tickets.getTotalPages())
-                .build();
+        Mono<List<TicketResponse>> routesMono = ticketService.getTickets(filter, pageable)
+                .map(ticketMapper::mapToResponse)
+                .collectList();
+
+        Mono<Long> totalRoutesMono = ticketService.countTickets(filter);
+
+        Mono<Boolean> hasNextPageMono = ticketService.hasNextPage(filter, pageable);
+
+        return Mono.zip(routesMono, totalRoutesMono, hasNextPageMono)
+                .map(tuple -> new PageTicketResponse(tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 
     @GetMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('TICKET_READ_PRIVILEGE')")
     @Operation(summary = "Получить билет")
-    @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
-            content = @Content)
-    public TicketResponse getTicket(
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
+                    content = @Content)
+    })
+    public Mono<TicketResponse> getTicket(
             @PathVariable
             Long route,
             @PathVariable
             Integer seat
     ) {
-        return ticketMapper.mapToResponse(ticketService.getTicketByRouteAndSeat(route, seat));
+        return ticketService.getTicketByRouteAndSeat(route, seat)
+                .map(ticketMapper::mapToResponse);
     }
 
     @PatchMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('TICKET_UPDATE_PRIVILEGE')")
     @Operation(summary = "Изменить билет")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Билета не существует",
@@ -100,9 +119,11 @@ public class TicketController {
             @ApiResponse(responseCode = "200", description = "Билет успешно изменён",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
-    public TicketResponse updateTicket(
+    public Mono<TicketResponse> updateTicket(
             @PathVariable
             Long route,
             @PathVariable
@@ -113,25 +134,29 @@ public class TicketController {
     ) {
         Ticket ticket = ticketMapper.mapToTicket(request, route, seat);
 
-        return ticketMapper.mapToResponse(ticketService.updateTicket(ticket));
+        return ticketService.updateTicket(ticket)
+                .map(ticketMapper::mapToResponse);
     }
 
     @DeleteMapping("/routes/{route}/tickets/{seat}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('TICKET_DELETE_PRIVILEGE')")
     @Operation(summary = "Удалить билет")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Билета не существует",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Параметры не прошли валидацию",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
-    public void deleteTicket(
+    public Mono<Void> deleteTicket(
             @PathVariable
             Long route,
             @PathVariable
             Integer seat
     ) {
-        ticketService.deleteTicket(route, seat);
+        return ticketService.deleteTicket(route, seat);
     }
 
 }

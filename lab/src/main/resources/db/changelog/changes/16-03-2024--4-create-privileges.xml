@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ShipIM" id="16-03-2024--5-create-privileges">
+        <insert tableName="privilege">
+            <column name="name" value="RESERVATION_CREATE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="RESERVATION_STATUS_UPDATE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="RESERVATION_DELETE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="RESERVATION_READ_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="ROUTE_READ_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="ROUTE_DELETE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="ROUTE_UPDATE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="TICKET_CREATE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="TICKET_READ_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="TICKET_UPDATE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="TICKET_DELETE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="USER_READ_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="USER_UPDATE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="USER_PROMOTE_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="USER_EDIT_PRIVILEGE"/>
+        </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="RESERVATION_EDIT_PRIVILEGE"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

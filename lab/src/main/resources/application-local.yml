@@ -1,7 +1,11 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/blps
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/blps
     username: postgres
+    password: postgres
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/blps
+    user: postgres
     password: postgres
 server:
   port: 8080

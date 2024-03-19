@@ -11,8 +11,8 @@ public class ReservationResponse {
 
     private Long id;
 
-    @JsonProperty(value = "user_login")
-    private String user;
+    @JsonProperty(value = "user_id")
+    private Long user;
 
     private Boolean bought;
 

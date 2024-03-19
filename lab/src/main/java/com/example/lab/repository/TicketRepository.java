@@ -1,19 +1,62 @@
 package com.example.lab.repository;
 
+import com.example.lab.dto.filtration.TicketFilter;
 import com.example.lab.model.entity.Ticket;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
+import java.time.LocalDate;
 
 @Repository
-public interface TicketRepository extends JpaRepository<Ticket, Long>, QuerydslPredicateExecutor<Ticket> {
+public interface TicketRepository extends ReactiveCrudRepository<Ticket, Long> {
 
-    Optional<Ticket> findTicketByRouteIdAndSeat(Long route, Integer seat);
+    Mono<Ticket> findTicketByRouteAndSeat(Long route, Integer seat);
 
-    boolean existsByRouteIdAndSeat(Long route, Integer seat);
+    Mono<Boolean> existsByRouteAndSeat(Long route, Integer seat);
 
-    void deleteByRouteIdAndSeat(Long route, Integer seat);
+    @Modifying
+    Mono<Void> deleteByRouteAndSeat(Long route, Integer seat);
 
+    @Query("select * from ticket t " +
+            "join route r on r.id = t.route_id " +
+            "where (:departure is null or r.departure = :departure) " +
+            "and (:price is null or t.price <= :price) " +
+            "and (:source is null or r.source = :source) " +
+            "and (:destination is null or r.destination = :destination) " +
+            "order by t.id " +
+            "limit :pageSize offset :pageNumber * :pageSize")
+    Flux<Ticket> findTickets(
+            LocalDate departure,
+            Double price,
+            String source,
+            String destination,
+            Integer pageSize,
+            Integer pageNumber
+    );
+
+    @Query("select count(*) from ticket t " +
+            "join route r on r.id = t.route_id " +
+            "where (:departure is null or r.departure = :departure) " +
+            "and (:price is null or t.price <= :price) " +
+            "and (:source is null or r.source = :source) " +
+            "and (:destination is null or r.destination = :destination)")
+    Mono<Long> getTicketsCount(
+            LocalDate departure,
+            Double price,
+            String source,
+            String destination
+    );
+
+    @Query("select exists(select * from ticket t " +
+            "join route r on r.id = t.route_id " +
+            "where (:departure is null or r.departure = :departure) " +
+            "and (:price is null or t.price <= :price) " +
+            "and (:source is null or r.source = :source) " +
+            "and (:destination is null or r.destination = :destination) " +
+            "limit :pageSize offset :pageNumber * :pageSize + 1)")
+    Mono<Boolean> hasNextPage(TicketFilter filter, Integer pageSize, Integer pageNumber);
 }

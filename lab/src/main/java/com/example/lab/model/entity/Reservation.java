@@ -1,18 +1,17 @@
 package com.example.lab.model.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Table(name = "reservation")
-@EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,23 +19,18 @@ import java.time.LocalDateTime;
 public class Reservation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "ticket_id")
-    private Ticket ticket;
+    @Column("ticket_id")
+    private Long ticket;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column("user_id")
+    private Long user;
 
-    @Column(name = "creation_date")
+    @Column("creation_date")
     @CreatedDate
     private LocalDateTime creationDate;
 
-    @Column(name = "bought")
     private Boolean bought = false;
 
 }

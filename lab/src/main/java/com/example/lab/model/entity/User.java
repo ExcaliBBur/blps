@@ -1,45 +1,44 @@
 package com.example.lab.model.entity;
 
-import com.example.lab.model.enumeration.UserRole;
-import com.example.lab.model.enumeration.UserStatus;
-import jakarta.persistence.*;
+import com.example.lab.model.enumeration.RoleEnum;
+import com.example.lab.model.enumeration.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
 import java.util.Objects;
 
-@Entity
 @Table(name = "_user")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class User {
+public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "login")
-    private String login;
+    private String username;
 
-    @Column(name = "password")
     private String password;
 
-    @Column(name = "role")
-    @Enumerated(value = EnumType.STRING)
-    private UserRole role = UserRole.USER;
+    private RoleEnum role = RoleEnum.ROLE_USER;
 
-    @Column(name = "status")
-    @Enumerated(value = EnumType.STRING)
-    private UserStatus status = UserStatus.ACTIVE;
+    private StatusEnum status = StatusEnum.ACTIVE;
+
+    @Transient
+    private List<? extends GrantedAuthority> authorities;
 
     public void setUser(User user) {
-        if (Objects.nonNull(user.login)) {
-            this.login = user.login;
+        if (Objects.nonNull(user.username)) {
+            this.username = user.username;
         }
 
         if (Objects.nonNull(user.password)) {
@@ -55,4 +54,23 @@ public class User {
         }
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return status.equals(StatusEnum.ACTIVE);
+    }
 }

@@ -1,18 +1,30 @@
 package com.example.lab.repository;
 
 import com.example.lab.model.entity.Reservation;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 @Repository
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends ReactiveCrudRepository<Reservation, Long> {
 
-    Optional<Reservation> findReservationByTicketRouteIdAndTicketSeat(Long route, Integer seat);
+    @Query("select * from reservation " +
+            "join ticket t on t.id = reservation.ticket_id " +
+            "where route_id = :route and seat = :seat")
+    Mono<Reservation> findReservationByTicket(Long route, Integer seat);
 
-    boolean existsByTicketRouteIdAndTicketSeat(Long route, Integer seat);
+    @Query("select exists(select * from reservation " +
+            "join ticket t on t.id = reservation.ticket_id " +
+            "where route_id = :route and seat = :seat)")
+    Mono<Boolean> existsByTicket(Long route, Integer seat);
 
-    void deleteByTicketRouteIdAndTicketSeat(Long route, Integer seat);
+    @Modifying
+    @Query("delete from reservation " +
+            "where reservation.id in (select reservation.id from reservation " +
+            "join ticket t on t.id = reservation.ticket_id " +
+            "where route_id = :route and seat = :seat)")
+    Mono<Void> deleteByTicket(Long route, Integer seat);
 
 }
