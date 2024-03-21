@@ -77,15 +77,15 @@ public class TicketController {
     ) {
         Pageable pageable = request.formPageRequest();
 
-        Mono<List<TicketResponse>> routesMono = ticketService.getTickets(filter, pageable)
+        Mono<List<TicketResponse>> ticketsMono = ticketService.getTickets(filter, pageable)
                 .map(ticketMapper::mapToResponse)
                 .collectList();
 
-        Mono<Long> totalRoutesMono = ticketService.countTickets(filter);
+        Mono<Long> totalTicketsMono = ticketService.countTickets(filter);
 
         Mono<Boolean> hasNextPageMono = ticketService.hasNextPage(filter, pageable);
 
-        return Mono.zip(routesMono, totalRoutesMono, hasNextPageMono)
+        return Mono.zip(ticketsMono, totalTicketsMono, hasNextPageMono)
                 .map(tuple -> new PageTicketResponse(tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 

@@ -4,9 +4,7 @@ import com.example.lab.constraint.UserRoleConstraint;
 import com.example.lab.constraint.UserStatusConstraint;
 import com.example.lab.dto.mapper.UserMapper;
 import com.example.lab.dto.pagination.PaginationRequest;
-import com.example.lab.dto.user.PageUserResponse;
-import com.example.lab.dto.user.UpdateUserRequest;
-import com.example.lab.dto.user.UserResponse;
+import com.example.lab.dto.user.*;
 import com.example.lab.model.entity.User;
 import com.example.lab.model.enumeration.RoleEnum;
 import com.example.lab.model.enumeration.StatusEnum;
@@ -125,12 +123,10 @@ public class UserController {
             Long id,
             @RequestBody
             @Valid
-            @UserRoleConstraint
-            String role
+            UpdateRoleRequest updateRoleRequest
     ) {
         User user = userMapper.mapToUser(id);
-        user.setRole(RoleEnum.valueOf(role));
-
+        user.setRole(RoleEnum.valueOf(updateRoleRequest.getRole()));
         return detailsService.updateUser(user)
                 .map(userMapper::mapToResponse);
     }
@@ -152,12 +148,10 @@ public class UserController {
             Long id,
             @RequestBody
             @Valid
-            @UserStatusConstraint
-            String status
+            UpdateStatusRequest updateStatusRequest
     ) {
         User user = userMapper.mapToUser(id);
-        user.setStatus(StatusEnum.valueOf(status));
-
+        user.setStatus(StatusEnum.valueOf(updateStatusRequest.getStatus()));
         return detailsService.updateUser(user)
                 .map(userMapper::mapToResponse);
     }

@@ -19,7 +19,7 @@ public interface RouteRepository extends ReactiveCrudRepository<Route, Long> {
     Mono<Long> getRoutesCount();
 
     @Query("select exists(select * from route r " +
-            "limit :pageSize offset :pageNumber * :pageSize + 1)")
+            "limit :pageSize offset (:pageNumber + 1) * :pageSize)")
     Mono<Boolean> hasNextPage(Integer pageSize, Integer pageNumber);
 
 }

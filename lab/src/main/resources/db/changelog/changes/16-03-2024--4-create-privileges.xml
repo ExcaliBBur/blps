@@ -67,5 +67,9 @@
         <insert tableName="privilege">
             <column name="name" value="RESERVATION_EDIT_PRIVILEGE"/>
         </insert>
+
+        <insert tableName="privilege">
+            <column name="name" value="ROUTE_CREATE_PRIVILEGE"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

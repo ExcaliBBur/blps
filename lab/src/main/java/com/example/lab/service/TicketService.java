@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class TicketService {
@@ -21,9 +23,14 @@ public class TicketService {
     }
 
     public Flux<Ticket> getTickets(TicketFilter filter, Pageable pageable) {
+        Double price = null;
+        if (Objects.nonNull(filter.getPrice())) {
+            price = Double.parseDouble(filter.getPrice());
+        }
+
         return ticketRepository.findTickets(
                 filter.getDeparture(),
-                Double.parseDouble(filter.getPrice()),
+                price,
                 filter.getSource(),
                 filter.getTarget(),
                 pageable.getPageSize(),
@@ -50,16 +57,32 @@ public class TicketService {
     }
 
     public Mono<Long> countTickets(TicketFilter ticketFilter) {
+        Double price = null;
+        if (Objects.nonNull(ticketFilter.getPrice())) {
+            price = Double.parseDouble(ticketFilter.getPrice());
+        }
+
         return ticketRepository.getTicketsCount(
                 ticketFilter.getDeparture(),
-                Double.parseDouble(ticketFilter.getPrice()),
+                price,
                 ticketFilter.getSource(),
                 ticketFilter.getTarget()
         );
     }
 
-    public Mono<Boolean> hasNextPage(TicketFilter filter, Pageable pageable) {
-        return ticketRepository.hasNextPage(filter, pageable.getPageSize(), pageable.getPageNumber());
+    public Mono<Boolean> hasNextPage(TicketFilter ticketFilter, Pageable pageable) {
+        Double price = null;
+        if (Objects.nonNull(ticketFilter.getPrice())) {
+            price = Double.parseDouble(ticketFilter.getPrice());
+        }
+
+        return ticketRepository.hasNextPage(
+                ticketFilter.getDeparture(),
+                price,
+                ticketFilter.getSource(),
+                ticketFilter.getTarget(),
+                pageable.getPageSize(),
+                pageable.getPageNumber());
     }
 
 }

@@ -19,7 +19,7 @@ public interface UserRepository extends ReactiveCrudRepository<User, Long> {
     Mono<Long> getUsersCount();
 
     @Query("select exists(select * from _user " +
-            "limit :pageSize offset :pageNumber * :pageSize + 1)")
+            "limit :pageSize offset (:pageNumber + 1) * :pageSize)")
     Mono<Boolean> hasNextPage(Integer pageSize, Integer pageNumber);
 
     Mono<User> findByUsername(String username);

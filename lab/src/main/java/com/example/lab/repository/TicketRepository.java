@@ -57,6 +57,12 @@ public interface TicketRepository extends ReactiveCrudRepository<Ticket, Long> {
             "and (:price is null or t.price <= :price) " +
             "and (:source is null or r.source = :source) " +
             "and (:destination is null or r.destination = :destination) " +
-            "limit :pageSize offset :pageNumber * :pageSize + 1)")
-    Mono<Boolean> hasNextPage(TicketFilter filter, Integer pageSize, Integer pageNumber);
+            "limit :pageSize offset (:pageNumber + 1) * :pageSize)")
+    Mono<Boolean> hasNextPage(
+            LocalDate departure,
+            Double price,
+            String source,
+            String destination,
+            Integer pageSize,
+            Integer pageNumber);
 }

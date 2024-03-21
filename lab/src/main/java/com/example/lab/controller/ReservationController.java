@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -50,9 +52,9 @@ public class ReservationController {
             Long route,
             @PathVariable
             Integer seat,
-            Principal principal
+            Authentication authentication
     ) {
-        User user = (User) principal;
+        User user = (User) authentication.getPrincipal();
         Reservation reservation = reservationMapper.mapToReservation(user.getId());
 
         return ticketService.getTicketByRouteAndSeat(route, seat)

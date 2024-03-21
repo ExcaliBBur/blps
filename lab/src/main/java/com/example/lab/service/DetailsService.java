@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,6 +60,7 @@ public class DetailsService implements ReactiveUserDetailsService {
     }
 
     public Mono<User> updateUser(User updated) {
+        System.out.println(updated.getId());
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
                 .map(Authentication::getPrincipal)
@@ -67,9 +69,9 @@ public class DetailsService implements ReactiveUserDetailsService {
                         .filter(u -> u.getId().equals(auth.getId()) || hasEditPrivilege(auth))
                         .switchIfEmpty(Mono.error(new IllegalAccessException("Недостаточно прав для редактирования другого пользователя")))
                         .flatMap(u -> {
-                                u.setUser(updated);
-                                u.setPassword(passwordEncoder.encode(u.getPassword()));
-                                return userRepository.save(u);
+                            u.setUser(updated);
+                            u.setPassword(passwordEncoder.encode(u.getPassword()));
+                            return userRepository.save(u);
                         }));
     }
 

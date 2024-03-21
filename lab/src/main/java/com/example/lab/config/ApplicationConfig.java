@@ -14,7 +14,8 @@ public class ApplicationConfig {
                 "reservation_ticket_id_key", "Бронь на этот билет уже существует",
                 "_user_login_key", "Пользователь с таким логином уже существует",
                 "ticket_unique", "Такой билет уже существует",
-                "route_unique", "Такой маршрут уже существует"
+                "route_unique", "Такой маршрут уже существует",
+                "fk_ticket_route", "Такого маршрута не существует"
         );
     }
 }
