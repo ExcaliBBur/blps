@@ -102,7 +102,7 @@ public class UserController {
     ) {
         User user = userMapper.mapToUser(request, id);
 
-        return detailsService.updateUser(user)
+        return detailsService.updateUserCredentials(user)
                 .map(userMapper::mapToResponse);
     }
 
@@ -127,7 +127,7 @@ public class UserController {
     ) {
         User user = userMapper.mapToUser(id);
         user.setRole(RoleEnum.valueOf(updateRoleRequest.getRole()));
-        return detailsService.updateUser(user)
+        return detailsService.updateUserRole(user)
                 .map(userMapper::mapToResponse);
     }
 
@@ -152,7 +152,7 @@ public class UserController {
     ) {
         User user = userMapper.mapToUser(id);
         user.setStatus(StatusEnum.valueOf(updateStatusRequest.getStatus()));
-        return detailsService.updateUser(user)
+        return detailsService.updateUserStatus(user)
                 .map(userMapper::mapToResponse);
     }
 

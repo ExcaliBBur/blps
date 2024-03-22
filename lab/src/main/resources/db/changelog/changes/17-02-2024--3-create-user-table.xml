@@ -12,7 +12,9 @@
             <column name="username" type="VARCHAR">
                 <constraints
                         nullable="false"
-                        unique="true"/>
+                        unique="true"
+                        uniqueConstraintName="user_unique"
+                />
             </column>
             <column name="password" type="VARCHAR">
                 <constraints

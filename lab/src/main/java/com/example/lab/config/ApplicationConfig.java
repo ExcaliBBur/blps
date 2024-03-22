@@ -12,10 +12,10 @@ public class ApplicationConfig {
     public Map<String, String> violationsMap() {
         return Map.of(
                 "reservation_ticket_id_key", "Бронь на этот билет уже существует",
-                "_user_login_key", "Пользователь с таким логином уже существует",
                 "ticket_unique", "Такой билет уже существует",
                 "route_unique", "Такой маршрут уже существует",
-                "fk_ticket_route", "Такого маршрута не существует"
+                "fk_ticket_route", "Такого маршрута не существует",
+                "user_unique", "Пользователь с таким логином уже существует"
         );
     }
 }

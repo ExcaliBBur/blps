@@ -24,4 +24,15 @@ public interface UserRepository extends ReactiveCrudRepository<User, Long> {
 
     Mono<User> findByUsername(String username);
 
+    @Query("update _user set username = :username, password = :password " +
+            "WHERE id = :id returning *")
+    Mono<User> updateUserCredentials(Long id, String username, String password);
+
+    @Query("update _user set role = :role " +
+            "WHERE id = :id returning *")
+    Mono<User> updateUserRole(Long id, String role);
+
+    @Query("update _user set status = :status " +
+            "WHERE id = :id returning *")
+    Mono<User> updateUserStatus(Long id, String status);
 }

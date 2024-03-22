@@ -59,8 +59,7 @@ public class DetailsService implements ReactiveUserDetailsService {
                 .switchIfEmpty(Mono.error(new EntityNotFoundException("Пользователя с таким именем не существует")));
     }
 
-    public Mono<User> updateUser(User updated) {
-        System.out.println(updated.getId());
+    public Mono<User> updateUserCredentials(User updated) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
                 .map(Authentication::getPrincipal)
@@ -71,7 +70,35 @@ public class DetailsService implements ReactiveUserDetailsService {
                         .flatMap(u -> {
                             u.setUser(updated);
                             u.setPassword(passwordEncoder.encode(u.getPassword()));
-                            return userRepository.save(u);
+                            return userRepository.updateUserCredentials(u.getId(), u.getUsername(), u.getPassword());
+                        }));
+    }
+
+    public Mono<User> updateUserRole(User updated) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .cast(User.class)
+                .flatMap(auth -> getUserById(updated.getId())
+                        .filter(u -> u.getId().equals(auth.getId()) || hasEditPrivilege(auth))
+                        .switchIfEmpty(Mono.error(new IllegalAccessException("Недостаточно прав для редактирования другого пользователя")))
+                        .flatMap(u -> {
+                            u.setUser(updated);
+                            return userRepository.updateUserRole(u.getId(), String.valueOf(u.getRole()));
+                        }));
+    }
+
+    public Mono<User> updateUserStatus(User updated) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .cast(User.class)
+                .flatMap(auth -> getUserById(updated.getId())
+                        .filter(u -> u.getId().equals(auth.getId()) || hasEditPrivilege(auth))
+                        .switchIfEmpty(Mono.error(new IllegalAccessException("Недостаточно прав для редактирования другого пользователя")))
+                        .flatMap(u -> {
+                            u.setUser(updated);
+                            return userRepository.updateUserStatus(u.getId(), u.getStatus().toString());
                         }));
     }
 
