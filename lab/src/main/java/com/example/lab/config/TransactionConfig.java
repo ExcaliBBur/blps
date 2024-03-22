@@ -1,0 +1,15 @@
+package com.example.lab.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.jta.JtaTransactionManager;
+
+@EnableTransactionManagement
+@Configuration
+public class TransactionConfig {
+    @Bean
+    public JtaTransactionManager transactionManager() {
+        return new JtaTransactionManager();
+    }
+}

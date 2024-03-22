@@ -1,6 +1,5 @@
 package com.example.lab.repository;
 
-import com.example.lab.dto.filtration.TicketFilter;
 import com.example.lab.model.entity.Ticket;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
