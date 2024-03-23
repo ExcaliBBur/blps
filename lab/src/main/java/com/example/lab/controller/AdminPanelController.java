@@ -68,7 +68,7 @@ public class AdminPanelController {
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('USER_CREATE_PRIVILEGE')")
+    @PreAuthorize("hasAuthority('USER_PROMOTE_PRIVILEGE')")
     @Operation(summary = "Создать пользователя и назначить ему роль модератора")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "409", description = "Логин уже существует",

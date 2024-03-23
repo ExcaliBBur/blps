@@ -7,6 +7,7 @@ import com.example.lab.model.enumeration.RoleEnum;
 import com.example.lab.repository.ReservationRepository;
 import com.example.lab.repository.TicketRepository;
 import com.example.lab.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,41 +23,43 @@ import java.util.Objects;
 public class AdminPanelService {
     private final TicketRepository ticketRepository;
     private final ReservationRepository reservationRepository;
-    private final PlatformTransactionManager transactionManager;
+//    private final PlatformTransactionManager transactionManager;
     private final UserRepository userRepository;
 
+    @Transactional
     public Mono<Reservation> createTicketAndReservation(Ticket ticket, Reservation reservation) {
-        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-        TransactionStatus transaction = transactionManager.getTransaction(transactionDefinition);
+//        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+//        TransactionStatus transaction = transactionManager.getTransaction(transactionDefinition);
 
         return ticketRepository.save(ticket)
                 .flatMap(t -> {
                     reservation.setTicket(t.getId());
-                    return reservationRepository.save(reservation)
-                            .flatMap(r -> {
-                                if (Objects.isNull(r)) {
-                                    transactionManager.rollback(transaction);
-                                } else {
-                                    transactionManager.commit(transaction);
-                                }
-                                return Mono.just(r);
-                            });
+                    return reservationRepository.save(reservation);
+//                            .flatMap(r -> {
+//                                if (Objects.isNull(r)) {
+//                                    transactionManager.rollback(transaction);
+//                                } else {
+//                                    transactionManager.commit(transaction);
+//                                }
+//                                return Mono.just(r);
+//                            });
                 });
     }
 
+    @Transactional
     public Mono<User> createUserAndSetModeratorRole(User user) {
-        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-        TransactionStatus transaction = transactionManager.getTransaction(transactionDefinition);
+//        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+//        TransactionStatus transaction = transactionManager.getTransaction(transactionDefinition);
 
         return userRepository.save(user)
-                .flatMap(u -> userRepository.updateUserRole(u.getId(), String.valueOf(RoleEnum.ROLE_MODERATOR)))
-                .flatMap(u -> {
-                    if (Objects.isNull(u)) {
-                        transactionManager.rollback(transaction);
-                    } else {
-                        transactionManager.commit(transaction);
-                    }
-                    return Mono.just(u);
-                });
+                .flatMap(u -> userRepository.updateUserRole(u.getId(), String.valueOf(RoleEnum.ROLE_MODERATOR)));
+//                .flatMap(u -> {
+//                    if (Objects.isNull(u)) {
+//                        transactionManager.rollback(transaction);
+//                    } else {
+//                        transactionManager.commit(transaction);
+//                    }
+//                    return Mono.just(u);
+//                });
     }
 }
