@@ -16,4 +16,5 @@
     <include file="/db/changelog/changes/17-03-2024--2-create-role-privilege.xml"/>
     <include file="/db/changelog/changes/17-03-2024--3-create-role-role.xml"/>
     <include file="/db/changelog/changes/18-03-2024--1-create-admin.xml"/>
+    <include file="/db/changelog/changes/02-05-2024--1-create-delete-expired-reservation-procedure.xml"/>
 </databaseChangeLog>

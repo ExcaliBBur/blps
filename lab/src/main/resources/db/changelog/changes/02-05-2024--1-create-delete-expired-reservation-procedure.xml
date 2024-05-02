@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ExcaliBBur" id="02-05-2024--1-create-delete-expired-reservation-function.xml">
+        <createProcedure procedureName="delete_expired_reservation">
+            CREATE OR REPLACE PROCEDURE delete_expired_reservation(time_delay integer) AS $$
+                BEGIN
+                    DELETE FROM reservation
+                        WHERE reservation.bought = false
+                        AND EXTRACT(EPOCH FROM (NOW()::TIMESTAMP - reservation.creation_date)) > time_delay;
+                END;
+            $$ LANGUAGE 'plpgsql';
+        </createProcedure>
+    </changeSet>
+</databaseChangeLog>
