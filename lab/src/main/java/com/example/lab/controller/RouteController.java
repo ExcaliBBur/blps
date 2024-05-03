@@ -1,11 +1,11 @@
 package com.example.lab.controller;
 
 import com.example.lab.dto.mapper.RouteMapper;
-import com.example.lab.dto.pagination.PaginationRequest;
-import com.example.lab.dto.route.CreateRouteRequest;
-import com.example.lab.dto.route.PageRouteResponse;
-import com.example.lab.dto.route.RouteResponse;
-import com.example.lab.dto.route.UpdateRouteRequest;
+import com.example.lab.dto.rest.pagination.PaginationRequest;
+import com.example.lab.dto.rest.route.CreateRouteRequest;
+import com.example.lab.dto.rest.route.PageRouteResponse;
+import com.example.lab.dto.rest.route.RouteResponse;
+import com.example.lab.dto.rest.route.UpdateRouteRequest;
 import com.example.lab.model.entity.Route;
 import com.example.lab.service.RouteService;
 import io.swagger.v3.oas.annotations.Operation;

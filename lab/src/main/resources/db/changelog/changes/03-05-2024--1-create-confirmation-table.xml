@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ShipIM" id="30-04-2024--1-create-confirmation-table">
+        <createTable tableName="confirmation">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints
+                        primaryKey="true"/>
+            </column>
+            <column name="request_id" type="VARCHAR">
+                <constraints
+                        nullable="false"
+                        unique="true"/>
+            </column>
+            <column name="reservation_id" type="BIGINT">
+                <constraints
+                    nullable="false"/>
+            </column>
+            <column name="processed" type="BOOLEAN">
+                <constraints
+                    nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="confirmation" baseColumnNames="reservation_id"
+                                 constraintName="fk_confirmation_reservation"
+                                 referencedTableName="reservation" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

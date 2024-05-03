@@ -1,8 +1,8 @@
 package com.example.lab.dto.mapper;
 
-import com.example.lab.dto.ticket.CreateTicketRequest;
-import com.example.lab.dto.ticket.TicketResponse;
-import com.example.lab.dto.ticket.UpdateTicketRequest;
+import com.example.lab.dto.rest.ticket.CreateTicketRequest;
+import com.example.lab.dto.rest.ticket.TicketResponse;
+import com.example.lab.dto.rest.ticket.UpdateTicketRequest;
 import com.example.lab.model.entity.Ticket;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

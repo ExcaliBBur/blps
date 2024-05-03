@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <include file="/db/changelog/changes/17-02-2024--1-create-route-table.xml"/>
+    <include file="/db/changelog/changes/17-02-2024--2-create-ticket-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--2-create-role-table.xml"/>
+    <include file="/db/changelog/changes/17-02-2024--3-create-user-table.xml"/>
+    <include file="/db/changelog/changes/17-02-2024--4-create-reservation-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--1-create-privilege-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--3-create-role-privilege-table.xml"/>
+    <include file="/db/changelog/changes/17-03-2024--1-create-role-role-table.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--4-create-privileges.xml"/>
+    <include file="/db/changelog/changes/16-03-2024--5-create-roles.xml"/>
+    <include file="/db/changelog/changes/17-03-2024--2-create-role-privilege.xml"/>
+    <include file="/db/changelog/changes/17-03-2024--3-create-role-role.xml"/>
+    <include file="/db/changelog/changes/18-03-2024--1-create-admin.xml"/>
+</databaseChangeLog>

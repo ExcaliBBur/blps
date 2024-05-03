@@ -1,25 +1,92 @@
 version: '3'
 
 services:
-  application:
-    image: 'application:1.0.0'
-    container_name: 'java-application'
+  lab:
+    image: 'shipim/lab:1.0.0'
+    container_name: 'lab'
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./lab/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
-      - 'postgres'
+      - blps-postgres
+      - kafka-3
     environment:
-      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://java-postgres:5432/blps'
-  postgres:
+      - 'SPRING_R2DBC_URL=r2dbc:postgresql://blps-postgres:5432/lab'
+      - 'SPRING_LIQUIBASE_URL=jdbc:postgresql://blps-postgres:5432/lab'
+      - 'KAFKA_BOOTSTRAP_SERVERS=kafka-1:19092,kafka-2:19093,kafka-3:19094'
+  confirmator:
+    image: 'shipim/confirmator:1.0.0'
+    container_name: 'confirmator'
+    build:
+      context: .
+      dockerfile: ./confirmator/Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - blps-postgres
+      - kafka-3
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://blps-postgres:5432/confirmator'
+      - 'KAFKA_BOOTSTRAP_SERVERS=kafka-1:19092,kafka-2:19093,kafka-3:19094'
+  blps-postgres:
     image: 'postgres:latest'
-    container_name: 'java-postgres'
+    container_name: 'blps-postgres'
     ports:
       - "5432:5432"
+    volumes:
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
     environment:
       - 'POSTGRES_USER=postgres'
       - 'POSTGRES_PASSWORD=postgres'
       - 'POSTGRES_HOST_AUTH_METHOD=trust'
-      - 'POSTGRES_DB=blps'
+      - 'POSTGRES_MULTIPLE_DATABASES=lab,confirmator'
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    ports:
+      - '2181:2181'
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+  kafka-1:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - '9092:9092'
+      - '29092:29092'
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092,DOCKER://host.docker.internal:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_BROKER_ID: 1
+    depends_on:
+      - zookeeper
+  kafka-2:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - '9093:9093'
+      - '29093:29093'
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:19093,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9093,DOCKER://host.docker.internal:29093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_BROKER_ID: 2
+    depends_on:
+      - zookeeper
+      - kafka-1
+  kafka-3:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - '9094:9094'
+      - '29094:29094'
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:19094,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9094,DOCKER://host.docker.internal:29094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_BROKER_ID: 3
+    depends_on:
+      - zookeeper
+      - kafka-2

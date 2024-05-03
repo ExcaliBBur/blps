@@ -27,4 +27,9 @@ public interface ReservationRepository extends ReactiveCrudRepository<Reservatio
             "where route_id = :route and seat = :seat)")
     Mono<Void> deleteByTicket(Long route, Integer seat);
 
+    @Query("update reservation " +
+            "set bought = :bought " +
+            "where reservation.id = :id")
+    Mono<Void> updateStatusById(Long id, Boolean bought);
+
 }

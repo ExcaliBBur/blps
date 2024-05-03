@@ -1,4 +1,4 @@
-package com.example.lab.dto.ticket;
+package com.example.lab.dto.rest.ticket;
 
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;

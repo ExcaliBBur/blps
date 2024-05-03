@@ -1,4 +1,4 @@
-package com.example.lab.dto.reservation;
+package com.example.lab.dto.rest.reservation;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,6 +1,6 @@
 package com.example.lab.service;
 
-import com.example.lab.dto.filtration.TicketFilter;
+import com.example.lab.dto.rest.filtration.TicketFilter;
 import com.example.lab.exception.EntityNotFoundException;
 import com.example.lab.model.entity.Ticket;
 import com.example.lab.repository.TicketRepository;

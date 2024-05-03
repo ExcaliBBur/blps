@@ -1,4 +1,4 @@
-package com.example.lab.config;
+package com.example.lab.config.security;
 
 import com.example.lab.auth.SecurityAuthConverter;
 import org.springframework.context.annotation.Bean;

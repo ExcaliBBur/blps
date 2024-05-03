@@ -1,8 +1,8 @@
 package com.example.lab.controller;
 
-import com.example.lab.dto.jwt.ResponseJwt;
+import com.example.lab.dto.rest.jwt.ResponseJwt;
 import com.example.lab.dto.mapper.UserMapper;
-import com.example.lab.dto.user.AuthenticateUserRequest;
+import com.example.lab.dto.rest.user.AuthenticateUserRequest;
 import com.example.lab.model.entity.User;
 import com.example.lab.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;

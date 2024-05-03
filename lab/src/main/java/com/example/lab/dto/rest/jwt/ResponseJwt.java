@@ -1,4 +1,4 @@
-package com.example.lab.dto.jwt;
+package com.example.lab.dto.rest.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

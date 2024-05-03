@@ -1,7 +1,7 @@
 package com.example.lab.controller;
 
 import com.example.lab.dto.mapper.ReservationMapper;
-import com.example.lab.dto.reservation.ReservationResponse;
+import com.example.lab.dto.rest.reservation.ReservationResponse;
 import com.example.lab.model.entity.Reservation;
 import com.example.lab.model.entity.User;
 import com.example.lab.service.ReservationService;
@@ -65,7 +65,7 @@ public class ReservationController {
     @PatchMapping("/{seat}/reservation/status")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('RESERVATION_STATUS_UPDATE_PRIVILEGE')")
-    @Operation(summary = "Изменить статус оплаты брони")
+    @Operation(summary = "Произвести оплату брони")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Брони не существует",
                     content = @Content),
@@ -74,16 +74,13 @@ public class ReservationController {
             @ApiResponse(responseCode = "403", description = "Нет необходимых прав доступа",
                     content = @Content)
     })
-    public Mono<ReservationResponse> updateReservationStatus(
+    public Mono<Void> updateReservationStatus(
             @PathVariable
             Long route,
             @PathVariable
-            Integer seat,
-            @RequestBody
-            Boolean bought
+            Integer seat
     ) {
-        return reservationService.updateReservationStatus(route, seat, bought)
-                .map(reservationMapper::mapToResponse);
+        return reservationService.buyReservation(route, seat);
     }
 
     @DeleteMapping("/{seat}/reservation")

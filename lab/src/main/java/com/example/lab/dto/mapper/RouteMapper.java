@@ -1,8 +1,8 @@
 package com.example.lab.dto.mapper;
 
-import com.example.lab.dto.route.CreateRouteRequest;
-import com.example.lab.dto.route.RouteResponse;
-import com.example.lab.dto.route.UpdateRouteRequest;
+import com.example.lab.dto.rest.route.CreateRouteRequest;
+import com.example.lab.dto.rest.route.RouteResponse;
+import com.example.lab.dto.rest.route.UpdateRouteRequest;
 import com.example.lab.model.entity.Route;
 import org.mapstruct.Mapper;
 

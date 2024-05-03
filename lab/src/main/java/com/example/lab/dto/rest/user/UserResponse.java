@@ -1,4 +1,4 @@
-package com.example.lab.dto.user;
+package com.example.lab.dto.rest.user;
 
 import com.example.lab.model.enumeration.RoleEnum;
 import com.example.lab.model.enumeration.StatusEnum;

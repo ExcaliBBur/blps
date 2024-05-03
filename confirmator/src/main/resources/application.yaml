@@ -1,0 +1,19 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
+  datasource:
+    url: jdbc:postgresql://pg:5432/studs
+    username: s335148
+    password: rzLbQbEEUx0WUqBv
+    driver-class-name: org.postgresql.Driver
+server:
+  port: 22223
+
+kafka:
+  bootstrap-servers: localhost:9092, localhost:9093, localhost:9094
+  consumer-group: confirmations.wip-consumer-group-0
+  inbound-topic: confirmations.wip
+  outbound-topic: confirmations.done
+  partitions-number: 1
+  replication-factor: 2
+  isr: 2

@@ -1,4 +1,4 @@
-package com.example.lab.dto.user;
+package com.example.lab.dto.rest.user;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;

@@ -16,3 +16,12 @@ jwt:
     access:
       key: B6E5061FADAD40CCAEBDD0F4B3EB3DEE3F4FCE86695FA0076BA9E0A894A53140
       expiration: 9999999
+
+kafka:
+  bootstrap-servers: localhost:9092, localhost:9093, localhost:9094
+  consumer-group: confirmations.done-consumer-group-0
+  inbound-topic: confirmations.done
+  outbound-topic: confirmations.wip
+  partitions-number: 1
+  replication-factor: 2
+  isr: 2

@@ -1,4 +1,4 @@
-package com.example.lab.dto.pagination;
+package com.example.lab.dto.rest.pagination;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

@@ -1,6 +1,6 @@
 package com.example.lab.dto.mapper;
 
-import com.example.lab.dto.reservation.ReservationResponse;
+import com.example.lab.dto.rest.reservation.ReservationResponse;
 import com.example.lab.model.entity.Reservation;
 import org.mapstruct.Mapper;
 

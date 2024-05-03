@@ -1,6 +1,6 @@
 package com.example.lab.service;
 
-import com.example.lab.dto.jwt.ResponseJwt;
+import com.example.lab.dto.rest.jwt.ResponseJwt;
 import com.example.lab.exception.IllegalAccessException;
 import com.example.lab.model.entity.User;
 import com.example.lab.utils.jwt.JwtUtils;

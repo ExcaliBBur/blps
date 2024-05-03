@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ShipIM" id="17-02-2024--2-create-ticket-table">
+        <createTable tableName="ticket">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints
+                        primaryKey="true"/>
+            </column>
+            <column name="route_id" type="BIGINT">
+                <constraints
+                        nullable="false"
+                        unique="true" uniqueConstraintName="ticket_unique"/>
+            </column>
+            <column name="seat" type="INT">
+                <constraints
+                        nullable="false"
+                        unique="true" uniqueConstraintName="ticket_unique"/>
+            </column>
+            <column name="price" type="Double">
+                <constraints
+                        nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="ticket" baseColumnNames="route_id"
+                                 constraintName="fk_ticket_route"
+                                 referencedTableName="route" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

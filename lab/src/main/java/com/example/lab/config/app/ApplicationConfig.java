@@ -1,11 +1,17 @@
-package com.example.lab.config;
+package com.example.lab.config.app;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
+import org.springframework.transaction.ReactiveTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.reactive.TransactionalOperator;
 
 import java.util.Map;
 
 @Configuration
+@EnableR2dbcAuditing
+@EnableTransactionManagement
 public class ApplicationConfig {
 
     @Bean
@@ -18,4 +24,10 @@ public class ApplicationConfig {
                 "user_unique", "Пользователь с таким логином уже существует"
         );
     }
+
+    @Bean
+    public TransactionalOperator transactionalOperator(ReactiveTransactionManager reactiveTransactionManager) {
+        return TransactionalOperator.create(reactiveTransactionManager);
+    }
+
 }

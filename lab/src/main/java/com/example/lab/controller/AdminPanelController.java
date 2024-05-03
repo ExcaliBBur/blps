@@ -3,10 +3,10 @@ package com.example.lab.controller;
 import com.example.lab.dto.mapper.ReservationMapper;
 import com.example.lab.dto.mapper.TicketMapper;
 import com.example.lab.dto.mapper.UserMapper;
-import com.example.lab.dto.reservation.ReservationResponse;
-import com.example.lab.dto.ticket.CreateTicketRequest;
-import com.example.lab.dto.user.AuthenticateUserRequest;
-import com.example.lab.dto.user.UserResponse;
+import com.example.lab.dto.rest.reservation.ReservationResponse;
+import com.example.lab.dto.rest.ticket.CreateTicketRequest;
+import com.example.lab.dto.rest.user.AuthenticateUserRequest;
+import com.example.lab.dto.rest.user.UserResponse;
 import com.example.lab.model.entity.Reservation;
 import com.example.lab.model.entity.Ticket;
 import com.example.lab.model.entity.User;
@@ -60,9 +60,9 @@ public class AdminPanelController {
     ) {
         User user = (User) authentication.getPrincipal();
         Reservation reservation = reservationMapper.mapToReservation(user.getId());
-        Ticket ticket1 = ticketMapper.mapToTicket(request, route);
+        Ticket ticket = ticketMapper.mapToTicket(request, route);
 
-        return adminPanelService.createTicketAndReservation(ticket1, reservation)
+        return adminPanelService.createTicketAndReservation(ticket, reservation)
                 .map(reservationMapper::mapToResponse);
     }
 

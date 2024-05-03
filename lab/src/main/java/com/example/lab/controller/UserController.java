@@ -1,8 +1,8 @@
 package com.example.lab.controller;
 
 import com.example.lab.dto.mapper.UserMapper;
-import com.example.lab.dto.pagination.PaginationRequest;
-import com.example.lab.dto.user.*;
+import com.example.lab.dto.rest.pagination.PaginationRequest;
+import com.example.lab.dto.rest.user.*;
 import com.example.lab.model.entity.User;
 import com.example.lab.model.enumeration.RoleEnum;
 import com.example.lab.model.enumeration.StatusEnum;

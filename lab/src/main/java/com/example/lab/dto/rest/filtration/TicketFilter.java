@@ -1,4 +1,4 @@
-package com.example.lab.dto.filtration;
+package com.example.lab.dto.rest.filtration;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Pattern;

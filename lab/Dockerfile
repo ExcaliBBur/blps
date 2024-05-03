@@ -1,5 +1,5 @@
 FROM openjdk:17-oracle
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} application.jar
+ARG JAR_FILE=lab/target/*.jar
+COPY ${JAR_FILE} lab.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/application.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=local", "-jar", "/lab.jar"]

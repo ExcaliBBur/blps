@@ -1,4 +1,4 @@
-package com.example.lab.dto.user;
+package com.example.lab.dto.rest.user;
 
 import com.example.lab.constraint.UserRoleConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;

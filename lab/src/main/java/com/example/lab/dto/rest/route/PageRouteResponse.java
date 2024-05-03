@@ -1,4 +1,4 @@
-package com.example.lab.dto.route;
+package com.example.lab.dto.rest.route;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

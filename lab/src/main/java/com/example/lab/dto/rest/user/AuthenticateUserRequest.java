@@ -1,4 +1,4 @@
-package com.example.lab.dto.user;
+package com.example.lab.dto.rest.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
