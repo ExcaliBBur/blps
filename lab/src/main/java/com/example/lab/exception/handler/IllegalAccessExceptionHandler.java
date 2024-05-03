@@ -13,7 +13,7 @@ public class IllegalAccessExceptionHandler {
 
     @ExceptionHandler(value = IllegalAccessException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Map<String,String> handleIllegalAccessException(IllegalAccessException exception) {
+    public Map<String, String> handleIllegalAccessException(IllegalAccessException exception) {
         return Map.of("error", exception.getMessage());
     }
 

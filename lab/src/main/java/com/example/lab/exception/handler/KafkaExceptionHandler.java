@@ -15,7 +15,7 @@ public class KafkaExceptionHandler {
 
     @ExceptionHandler(value = KafkaException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String,String> handleKafkaException(KafkaException exception) {
+    public Map<String, String> handleKafkaException(KafkaException exception) {
         return Map.of("error", exception.getMessage());
     }
 

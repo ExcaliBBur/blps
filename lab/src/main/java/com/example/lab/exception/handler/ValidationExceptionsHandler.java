@@ -1,7 +1,6 @@
 package com.example.lab.exception.handler;
 
 import com.example.lab.exception.AlreadyPaidException;
-import com.example.lab.exception.EntityNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,7 +33,7 @@ public class ValidationExceptionsHandler {
 
     @ExceptionHandler(value = AlreadyPaidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String,String> handleAlreadyPaidException(AlreadyPaidException exception) {
+    public Map<String, String> handleAlreadyPaidException(AlreadyPaidException exception) {
         return Map.of("error", exception.getMessage());
     }
 

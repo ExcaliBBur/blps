@@ -32,4 +32,7 @@ public interface ReservationRepository extends ReactiveCrudRepository<Reservatio
             "where reservation.id = :id")
     Mono<Void> updateStatusById(Long id, Boolean bought);
 
+    @Query("call delete_expired_reservation(:time_delay_seconds)")
+    Mono<Void> deleteExpired(Integer time_delay_seconds);
+
 }

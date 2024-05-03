@@ -9,3 +9,5 @@ spring:
     password: postgres
 server:
   port: 8080
+
+clean-up-reservation-delay-seconds: 1800

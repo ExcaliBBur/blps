@@ -13,7 +13,7 @@ public class EntityNotFoundExceptionHandler {
 
     @ExceptionHandler(value = EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String,String> handleNotFoundException(EntityNotFoundException exception) {
+    public Map<String, String> handleNotFoundException(EntityNotFoundException exception) {
         return Map.of("error", exception.getMessage());
     }
 

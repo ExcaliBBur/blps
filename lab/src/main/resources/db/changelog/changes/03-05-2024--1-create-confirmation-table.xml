@@ -16,11 +16,11 @@
             </column>
             <column name="reservation_id" type="BIGINT">
                 <constraints
-                    nullable="false"/>
+                        nullable="false"/>
             </column>
             <column name="processed" type="BOOLEAN">
                 <constraints
-                    nullable="false"/>
+                        nullable="false"/>
             </column>
         </createTable>
         <addForeignKeyConstraint baseTableName="confirmation" baseColumnNames="reservation_id"

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateStatusRequest {
-    @Schema(allowableValues = { "ACTIVE", "INACTIVE" })
+    @Schema(allowableValues = {"ACTIVE", "INACTIVE"})
     @UserStatusConstraint(message = "Такого статуса не существует")
     private String status;
 }

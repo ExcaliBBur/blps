@@ -54,7 +54,7 @@ public class KafkaConfig {
 
     @EventListener(value = ContextRefreshedEvent.class)
     public void outboundTopic() {
-        try(var admin = admin()) {
+        try (var admin = admin()) {
             var newTopic = new NewTopic(kafkaProperties.getOutboundTopic(), kafkaProperties.getPartitionsNumber(),
                     kafkaProperties.getReplicationFactor());
 
