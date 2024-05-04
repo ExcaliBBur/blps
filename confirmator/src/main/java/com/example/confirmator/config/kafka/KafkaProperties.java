@@ -23,4 +23,6 @@ public class KafkaProperties {
 
     private Short isr;
 
+    private String transactionalId;
+
 }

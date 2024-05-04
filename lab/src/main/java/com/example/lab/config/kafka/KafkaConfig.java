@@ -103,6 +103,8 @@ public class KafkaConfig {
 
         props.put(ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, false);
 
+        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+
         ReceiverOptions<String, ConfirmationAnswer> receiverOptions = ReceiverOptions.create(props);
         return receiverOptions.subscription(List.of(kafkaProperties.getInboundTopic()));
     }

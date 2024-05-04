@@ -18,6 +18,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
@@ -38,13 +41,18 @@ public class ReservationService {
     public void process() {
         try (consumer; producer) {
             consumer.subscribe(List.of(kafkaProperties.getInboundTopic()));
+            producer.initTransactions();
 
             while (true) {
                 var consumerRecords = consumer.poll(Duration.ofMillis(TIMEOUT));
+                var latch = new CountDownLatch(consumerRecords.count());
+                var isFailed = new AtomicBoolean(false);
 
                 try {
-                    for (var consumerRecord : consumerRecords) {
-                        transactionTemplate.executeWithoutResult(status -> {
+                    transactionTemplate.executeWithoutResult(status -> {
+                        producer.beginTransaction();
+
+                        for (var consumerRecord : consumerRecords) {
                             var reservation = consumerRecord.value().getConfirmationId();
                             if (processedRepository.existsByRequest(reservation)) {
                                 return;
@@ -55,13 +63,33 @@ public class ReservationService {
                                     kafkaProperties.getOutboundTopic(),
                                     new ConfirmationAnswer(reservation, true)
                             );
-                            producer.send(producerRecord);
-                        });
-                    }
+                            producer.send(producerRecord, (recordMetadata, exception) -> {
+                                latch.countDown();
 
-                    consumer.commitSync();
-                } catch (KafkaException e) {
-                    log.error("Ошибка при отправке сообщения в Kafka: {}", e.getMessage(), e);
+                                if (Objects.nonNull(exception)) {
+                                    isFailed.set(true);
+                                }
+                            });
+                        }
+
+                        try {
+                            latch.await();
+                            if (isFailed.get()) {
+                                producer.abortTransaction();
+
+                                throw new KafkaException("Ошибка при отправке сообщения в Kafka");
+                            }
+
+                            producer.commitTransaction();
+                            consumer.commitSync();
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+
+                            producer.abortTransaction();
+                        }
+                    });
+                } catch (Exception e) {
+                    log.error("Невозможно обработать подтверждения, возникла ошибка: {}", e.getMessage(), e);
                 }
             }
         }

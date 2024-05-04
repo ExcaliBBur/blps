@@ -17,3 +17,4 @@ kafka:
   partitions-number: 1
   replication-factor: 2
   isr: 2
+  transactional-id: confirmations.wip-producer-0

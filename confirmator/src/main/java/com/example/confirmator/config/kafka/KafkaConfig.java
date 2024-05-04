@@ -83,6 +83,8 @@ public class KafkaConfig {
 
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
 
+        props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, kafkaProperties.getTransactionalId());
+
         return props;
     }
 
@@ -102,6 +104,8 @@ public class KafkaConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 
         props.put(ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, false);
+
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 10);
 
         return props;
     }
