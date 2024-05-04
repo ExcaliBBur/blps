@@ -53,15 +53,15 @@ public class ReservationService {
                         producer.beginTransaction();
 
                         for (var consumerRecord : consumerRecords) {
-                            var reservation = consumerRecord.value().getConfirmationId();
-                            if (processedRepository.existsByRequest(reservation)) {
-                                return;
+                            var confirmation = consumerRecord.value().getConfirmationId();
+                            if (processedRepository.existsByRequest(confirmation)) {
+                                continue;
                             }
-                            processedRepository.save(new Processed(null, reservation));
+                            processedRepository.save(new Processed(null, confirmation));
 
                             var producerRecord = new ProducerRecord<String, ConfirmationAnswer>(
                                     kafkaProperties.getOutboundTopic(),
-                                    new ConfirmationAnswer(reservation, true)
+                                    new ConfirmationAnswer(confirmation, true)
                             );
                             producer.send(producerRecord, (recordMetadata, exception) -> {
                                 latch.countDown();
@@ -83,9 +83,9 @@ public class ReservationService {
                             producer.commitTransaction();
                             consumer.commitSync();
                         } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-
                             producer.abortTransaction();
+
+                            Thread.currentThread().interrupt();
                         }
                     });
                 } catch (Exception e) {
