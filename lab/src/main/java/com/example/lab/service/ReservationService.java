@@ -61,11 +61,11 @@ public class ReservationService {
         return getReservationByRouteAndSeat(route, seat)
                 .filter(reservation -> !reservation.getBought())
                 .switchIfEmpty(Mono.error(new AlreadyPaidException("Бронь уже оплачена")))
-                .flatMap(reservation -> confirmationRepository.existsByReservationId(reservation.getId())
+                .flatMap(reservation -> confirmationRepository
+                        .existsByReservationIdAndProcessed(reservation.getId(), false)
                         .filter(exists -> !exists)
-                        .switchIfEmpty(Mono.error(new AlreadyPaidException("Запрос на оплату брони уже существует")))
-                        .thenReturn(reservation)
-                )
+                        .switchIfEmpty(Mono.error(new AlreadyPaidException("Активный запрос на оплату брони уже существует")))
+                        .thenReturn(reservation))
                 .flatMap(reservation -> generateUniqueUUID()
                         .flatMap(uuid -> {
                             Confirmation confirmation = new Confirmation(null, uuid, reservation.getId(),

@@ -9,7 +9,7 @@ public interface ConfirmationRepository extends ReactiveCrudRepository<Confirmat
 
     Mono<Boolean> existsByRequestId(String id);
 
-    Mono<Boolean> existsByReservationId(Long id);
+    Mono<Boolean> existsByReservationIdAndProcessed(Long id, Boolean processed);
 
     Mono<Confirmation> findConfirmationByRequestId(String id);
 
