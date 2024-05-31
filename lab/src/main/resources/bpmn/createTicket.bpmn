@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1t81lxj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
+  <bpmn:collaboration id="Collaboration_0xkb463">
+    <bpmn:participant id="Participant_12kbrbm" name="Создание билета" processRef="Process_0v6xcww" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_0v6xcww" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:laneSet id="LaneSet_0ybm6m5">
+      <bpmn:lane id="Lane_1fyih7r" name="Пользователь">
+        <bpmn:flowNodeRef>Event_1ldq8yv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0bpuojj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0xbj1ji</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0p0t59e" name="Сервис бронирования">
+        <bpmn:flowNodeRef>Activity_06e49rt</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Event_1ldq8yv" name="Создание билета">
+      <bpmn:outgoing>Flow_0ptgewn</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_0bpuojj" name="Заполнить форму создания билета" camunda:assignee="ExcaliBBur">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="route" label="Route" type="long" defaultValue="0" />
+          <camunda:formField id="seat" label="Seat" type="long" defaultValue="0" />
+          <camunda:formField id="price" label="Price" type="long" defaultValue="0">
+            <camunda:validation />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ptgewn</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j48ane</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_06e49rt" name="Создание билета" camunda:delegateExpression="${createTicket}">
+      <bpmn:incoming>Flow_1j48ane</bpmn:incoming>
+      <bpmn:outgoing>Flow_04ovht9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_0xbj1ji" name="Билет создан">
+      <bpmn:incoming>Flow_04ovht9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ptgewn" sourceRef="Event_1ldq8yv" targetRef="Activity_0bpuojj" />
+    <bpmn:sequenceFlow id="Flow_1j48ane" sourceRef="Activity_0bpuojj" targetRef="Activity_06e49rt" />
+    <bpmn:sequenceFlow id="Flow_04ovht9" sourceRef="Activity_06e49rt" targetRef="Event_0xbj1ji" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0xkb463">
+      <bpmndi:BPMNShape id="BPMNShape_03035zi" bpmnElement="Participant_12kbrbm" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="600" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0mtgq1p" bpmnElement="Lane_1fyih7r" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="570" height="125" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ybcd6u" bpmnElement="Lane_0p0t59e" isHorizontal="true">
+        <dc:Bounds x="190" y="205" width="570" height="125" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0b0tp3w" bpmnElement="Event_1ldq8yv">
+        <dc:Bounds x="242" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="216" y="165" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_19zukrr" bpmnElement="Activity_0bpuojj">
+        <dc:Bounds x="330" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_061o0d0" bpmnElement="Activity_06e49rt">
+        <dc:Bounds x="330" y="230" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_09s5oe5" bpmnElement="Event_0xbj1ji">
+        <dc:Bounds x="472" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="456" y="165" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_01t3tez" bpmnElement="Flow_0ptgewn">
+        <di:waypoint x="278" y="140" />
+        <di:waypoint x="330" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_11th9nu" bpmnElement="Flow_1j48ane">
+        <di:waypoint x="380" y="180" />
+        <di:waypoint x="380" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_05hkks7" bpmnElement="Flow_04ovht9">
+        <di:waypoint x="430" y="270" />
+        <di:waypoint x="451" y="270" />
+        <di:waypoint x="451" y="140" />
+        <di:waypoint x="472" y="140" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
